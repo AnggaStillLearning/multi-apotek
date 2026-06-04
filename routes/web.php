@@ -23,6 +23,10 @@ Route::middleware('auth')->group(function () {
     )->name('monitoring.stok-kritis');
 
 });
+Route::get(
+    '/monitoring/kadaluarsa',
+    [MonitoringController::class, 'kadaluarsa']
+)->name('monitoring.kadaluarsa');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

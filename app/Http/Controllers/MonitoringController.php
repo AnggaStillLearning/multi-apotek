@@ -24,4 +24,24 @@ class MonitoringController extends Controller
             compact('obats')
         );
     }
+
+    public function kadaluarsa()
+    {
+        $obats = Obat::where(
+            'apotek_id',
+            auth()->user()->apotek_id
+        )
+        ->whereDate(
+            'tanggal_kadaluarsa',
+            '<=',
+            now()->addDays(30)
+        )
+        ->orderBy('tanggal_kadaluarsa')
+        ->get();
+
+        return view(
+            'monitoring.kadaluarsa',
+            compact('obats')
+        );
+    }
 }
