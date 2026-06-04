@@ -4,3 +4,9 @@
     Data Obat
 
 </a>
+<a href="{{ route('monitoring.stok-kritis') }}"
+   class="block px-4 py-2">
+
+    Monitoring Stok
+
+</a>

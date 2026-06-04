@@ -2,29 +2,51 @@
 
 @section('content')
 
-<div class="flex justify-between mb-6">
+@if(session('success'))
 
-    <h1 class="text-2xl font-bold">
-        Data Obat
-    </h1>
+<div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+    {{ session('success') }}
+</div>
+@endif
 
-    <a href="{{ route('obats.create') }}"
-       class="bg-blue-600 text-white px-4 py-2 rounded">
+<div class="flex justify-between items-center mb-6">
 
-        Tambah Obat
+<h1 class="text-2xl font-bold">
+    Data Obat
+</h1>
 
-    </a>
+<a href="{{ route('obats.create') }}"
+   class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+
+    Tambah Obat
+
+</a>
 
 </div>
 
-<table class="w-full bg-white shadow rounded">
+<div class="bg-white shadow rounded-lg overflow-hidden">
+
+<table class="w-full">
 
     <thead>
         <tr class="bg-gray-100">
-            <th class="p-3">Nama</th>
-            <th class="p-3">Stok</th>
-            <th class="p-3">Kadaluarsa</th>
-            <th class="p-3">Aksi</th>
+
+            <th class="p-3 text-left">
+                Nama Obat
+            </th>
+
+            <th class="p-3 text-left">
+                Stok
+            </th>
+
+            <th class="p-3 text-left">
+                Kadaluarsa
+            </th>
+
+            <th class="p-3 text-center">
+                Aksi
+            </th>
+
         </tr>
     </thead>
 
@@ -32,7 +54,7 @@
 
         @forelse($obats as $obat)
 
-        <tr>
+        <tr class="border-t">
 
             <td class="p-3">
                 {{ $obat->nama_obat }}
@@ -46,14 +68,32 @@
                 {{ $obat->tanggal_kadaluarsa }}
             </td>
 
-            <td class="p-3">
+            <td class="p-3 text-center">
 
-                <a href="{{ route('obats.edit',$obat->id) }}"
-                   class="text-blue-600">
+                <a href="{{ route('obats.edit', $obat->id) }}"
+                   class="text-blue-600 hover:text-blue-800 mr-3">
 
                     Edit
 
                 </a>
+
+                <form action="{{ route('obats.destroy', $obat->id) }}"
+                      method="POST"
+                      class="inline">
+
+                    @csrf
+                    @method('DELETE')
+
+                    <button
+                        type="submit"
+                        onclick="return confirm('Yakin ingin menghapus obat ini?')"
+                        class="text-red-600 hover:text-red-800">
+
+                        Hapus
+
+                    </button>
+
+                </form>
 
             </td>
 
@@ -62,7 +102,7 @@
         @empty
 
         <tr>
-            <td colspan="4" class="text-center p-5">
+            <td colspan="4" class="text-center p-6 text-gray-500">
                 Belum ada data obat
             </td>
         </tr>
@@ -72,5 +112,7 @@
     </tbody>
 
 </table>
+
+</div>
 
 @endsection
