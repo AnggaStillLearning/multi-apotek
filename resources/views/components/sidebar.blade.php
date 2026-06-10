@@ -34,6 +34,13 @@
 
         </a>
 
+        <a href="{{ route('penjualans.index') }}"
+            class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-600">
+
+            🛒 Transaksi
+
+        </a>
+
     </nav>
 
 </aside>

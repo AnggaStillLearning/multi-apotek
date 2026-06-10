@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Penjualan extends Model
+{
+    protected $fillable = [
+        'apotek_id',
+        'user_id',
+        'tanggal',
+        'total_harga'
+    ];
+
+    public function details()
+    {
+        return $this->hasMany(
+            PenjualanDetail::class
+        );
+    }
+    public function user()
+{
+    return $this->belongsTo(User::class);
+}
+}
