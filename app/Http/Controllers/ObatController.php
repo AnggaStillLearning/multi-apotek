@@ -12,9 +12,14 @@ class ObatController extends Controller
         $obats = Obat::where(
             'apotek_id',
             auth()->user()->apotek_id
-        )->latest()->paginate(10);
+        )
+        ->latest()
+        ->paginate(10);
 
-        return view('obats.index', compact('obats'));
+        return view(
+            'obats.index',
+            compact('obats')
+        );
     }
 
     public function create()
@@ -28,8 +33,8 @@ class ObatController extends Controller
             'nama_obat' => 'required',
             'harga_beli' => 'required|numeric',
             'harga_jual' => 'required|numeric',
-            'stok' => 'required|integer',
-            'stok_minimum' => 'required|integer',
+            'stok' => 'required|integer|min:0',
+            'stok_minimum' => 'required|integer|min:0',
             'tanggal_kadaluarsa' => 'required|date',
         ]);
 
@@ -45,38 +50,75 @@ class ObatController extends Controller
 
         return redirect()
             ->route('obats.index')
-            ->with('success', 'Obat berhasil ditambahkan');
+            ->with(
+                'success',
+                'Obat berhasil ditambahkan'
+            );
     }
 
     public function edit(Obat $obat)
     {
-        return view('obats.edit', compact('obat'));
+        if (
+            $obat->apotek_id != auth()->user()->apotek_id
+        ) {
+            abort(403);
+        }
+
+        return view(
+            'obats.edit',
+            compact('obat')
+        );
     }
 
     public function update(Request $request, Obat $obat)
     {
+        if (
+            $obat->apotek_id != auth()->user()->apotek_id
+        ) {
+            abort(403);
+        }
+
         $request->validate([
             'nama_obat' => 'required',
             'harga_beli' => 'required|numeric',
             'harga_jual' => 'required|numeric',
-            'stok' => 'required|integer',
-            'stok_minimum' => 'required|integer',
+            'stok' => 'required|integer|min:0',
+            'stok_minimum' => 'required|integer|min:0',
             'tanggal_kadaluarsa' => 'required|date',
         ]);
 
-        $obat->update($request->all());
+        $obat->update([
+            'nama_obat' => $request->nama_obat,
+            'harga_beli' => $request->harga_beli,
+            'harga_jual' => $request->harga_jual,
+            'stok' => $request->stok,
+            'stok_minimum' => $request->stok_minimum,
+            'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa,
+        ]);
 
         return redirect()
             ->route('obats.index')
-            ->with('success', 'Obat berhasil diperbarui');
+            ->with(
+                'success',
+                'Obat berhasil diperbarui'
+            );
     }
 
     public function destroy(Obat $obat)
     {
+        if (
+            $obat->apotek_id != auth()->user()->apotek_id
+        ) {
+            abort(403);
+        }
+
         $obat->delete();
 
         return redirect()
             ->route('obats.index')
-            ->with('success', 'Obat berhasil dihapus');
+            ->with(
+                'success',
+                'Obat berhasil dihapus'
+            );
     }
 }

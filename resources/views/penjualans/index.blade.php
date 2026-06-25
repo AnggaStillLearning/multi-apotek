@@ -4,7 +4,6 @@
 
 <div class="flex justify-between items-center mb-6">
 
-```
 <h1 class="text-3xl font-bold">
     Transaksi Penjualan
 </h1>
@@ -15,7 +14,6 @@
     Tambah Transaksi
 
 </a>
-```
 
 </div>
 
@@ -24,9 +22,7 @@
 <div class="bg-green-100 border border-green-400
             text-green-700 px-4 py-3 rounded mb-4">
 
-```
 {{ session('success') }}
-```
 
 </div>
 

@@ -8,6 +8,7 @@ class Obat extends Model
 {
     protected $fillable = [
         'apotek_id',
+        'kategori_id',
         'nama_obat',
         'harga_beli',
         'harga_jual',
@@ -15,6 +16,12 @@ class Obat extends Model
         'stok_minimum',
         'tanggal_kadaluarsa'
     ];
+    public function kategori()
+    {
+    return $this->belongsTo(
+        Kategori::class
+    );
+}
 
     public function apotek()
     {

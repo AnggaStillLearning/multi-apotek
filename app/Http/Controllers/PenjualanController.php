@@ -36,68 +36,81 @@ class PenjualanController extends Controller
             compact('obats')
         );
     }
+
     public function store(Request $request)
-{
-$request->validate([
-'obat_id' => 'required',
-'qty' => 'required|integer|min:1'
-]);
+    {
+        $request->validate([
+            'obat_id' => 'required',
+            'qty' => 'required|integer|min:1'
+        ]);
 
+        // Pastikan obat milik apotek yang sedang login
+        $obat = Obat::where(
+            'id',
+            $request->obat_id
+        )
+        ->where(
+            'apotek_id',
+            auth()->user()->apotek_id
+        )
+        ->firstOrFail();
 
-$obat = Obat::findOrFail(
-    $request->obat_id
-);
+        if($request->qty > $obat->stok)
+        {
+            return back()
+                ->with(
+                    'error',
+                    'Stok tidak mencukupi'
+                );
+        }
 
-if($request->qty > $obat->stok)
-{
-    return back()
-        ->with(
-            'error',
-            'Stok tidak mencukupi'
+        $total = $obat->harga_jual * $request->qty;
+
+        $penjualan = Penjualan::create([
+            'apotek_id' => auth()->user()->apotek_id,
+            'user_id' => auth()->id(),
+            'tanggal' => now(),
+            'total_harga' => $total
+        ]);
+
+        PenjualanDetail::create([
+            'penjualan_id' => $penjualan->id,
+            'obat_id' => $obat->id,
+            'qty' => $request->qty,
+            'harga' => $obat->harga_jual,
+            'subtotal' => $total
+        ]);
+
+        $obat->decrement(
+            'stok',
+            $request->qty
         );
-}
 
-$total = $obat->harga_jual * $request->qty;
+        return redirect()
+            ->route('penjualans.index')
+            ->with(
+                'success',
+                'Transaksi berhasil'
+            );
+    }
 
-$penjualan = Penjualan::create([
-    'apotek_id' => auth()->user()->apotek_id,
-    'user_id' => auth()->id(),
-    'tanggal' => now(),
-    'total_harga' => $total
-]);
+    public function show(Penjualan $penjualan)
+    {
+        // Pastikan transaksi milik apotek yang login
+        if(
+            $penjualan->apotek_id != auth()->user()->apotek_id
+        )
+        {
+            abort(403);
+        }
 
-PenjualanDetail::create([
-    'penjualan_id' => $penjualan->id,
-    'obat_id' => $obat->id,
-    'qty' => $request->qty,
-    'harga' => $obat->harga_jual,
-    'subtotal' => $total
-]);
+        $penjualan->load(
+            'details.obat'
+        );
 
-$obat->decrement(
-    'stok',
-    $request->qty
-);
-
-return redirect()
-    ->route('penjualans.index')
-    ->with(
-        'success',
-        'Transaksi berhasil'
-    );
-
-
-}
-public function show(Penjualan $penjualan)
-{
-    $penjualan->load(
-        'details.obat'
-    );
-
-    return view(
-        'penjualans.show',
-        compact('penjualan')
-    );
-}
-
+        return view(
+            'penjualans.show',
+            compact('penjualan')
+        );
+    }
 }
