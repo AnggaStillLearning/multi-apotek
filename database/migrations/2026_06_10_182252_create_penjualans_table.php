@@ -11,26 +11,30 @@ return new class extends Migration
      */
     public function up(): void
     {
-            Schema::create('penjualans', function (Blueprint $table) {
-        $table->id();
+        Schema::create('penjualans', function (Blueprint $table) {
 
-        $table->foreignId('apotek_id')
-            ->constrained()
-            ->cascadeOnDelete();
+            $table->id();
 
-        $table->foreignId('user_id')
-            ->constrained()
-            ->cascadeOnDelete();
+            $table->foreignId('apotek_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
-        $table->date('tanggal');
+            $table->foreignId('user_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
-        $table->decimal(
-            'total_harga',
-            15,
-            2
-        )->default(0);
+            $table->dateTime('tanggal');
 
-        $table->timestamps();
+            $table->decimal('total_harga', 15, 2)
+                ->default(0);
+
+            $table->enum('status', [
+                'selesai',
+                'dibatalkan'
+            ])->default('selesai');
+
+            $table->timestamps();
+
         });
     }
 

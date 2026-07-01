@@ -1,33 +1,51 @@
-<aside class="w-64 min-h-screen bg-blue-700 text-white p-4">
+<aside class="w-72 min-h-screen bg-gradient-to-b from-blue-800 via-blue-700 to-blue-900 text-white flex flex-col shadow-2xl">
 
-    <h1 class="text-2xl font-bold mb-8">
-        Multi Apotek
-    </h1>
+    <!-- Logo -->
+    <div class="px-6 py-8 border-b border-blue-600">
 
-    <nav class="space-y-2">
+        <h1 class="text-3xl font-extrabold tracking-wide">
+
+            SIMPATI
+
+        </h1>
+
+        <p class="text-sm text-blue-200 mt-1">
+
+            Sistem Manajemen Multi Apotek Terintegrasi
+
+        </p>
+
+    </div>
+
+    <!-- Menu -->
+    <nav class="flex-1 px-4 py-6 space-y-2">
 
         {{-- ================= SUPER ADMIN ================= --}}
 
         @if(auth()->user()->role == 'super_admin')
 
-            <a href="{{ route('dashboard') }}"
-               class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-600">
+            <p class="text-xs uppercase text-blue-300 font-semibold px-3 mb-2">
+                Super Admin
+            </p>
 
-                📊 Dashboard
+            <a href="{{ route('dashboard') }}"
+               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-600 transition">
+
+                📊 <span>Dashboard</span>
 
             </a>
 
             <a href="{{ route('apoteks.index') }}"
-               class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-600">
+               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-600 transition">
 
-                🏥 Data Apotek
+                🏥 <span>Data Apotek</span>
 
             </a>
 
             <a href="{{ route('users.index') }}"
-               class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-600">
+               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-600 transition">
 
-                👤 Data Akun
+                👤 <span>Data Akun</span>
 
             </a>
 
@@ -38,38 +56,42 @@
 
         @if(auth()->user()->role == 'admin_apotek')
 
-            <a href="{{ route('dashboard') }}"
-               class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-600">
+            <p class="text-xs uppercase text-blue-300 font-semibold px-3 mt-4 mb-2">
+                Admin Apotek
+            </p>
 
-                📊 Dashboard
+            <a href="{{ route('dashboard') }}"
+               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-600 transition">
+
+                📊 <span>Dashboard</span>
 
             </a>
 
             <a href="{{ route('obats.index') }}"
-               class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-600">
+               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-600 transition">
 
-                💊 Data Obat
+                💊 <span>Data Obat</span>
 
             </a>
 
             <a href="{{ route('monitoring.stok-kritis') }}"
-               class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-600">
+               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-600 transition">
 
-                ⚠ Monitoring Stok
+                ⚠ <span>Monitoring Stok</span>
 
             </a>
 
             <a href="{{ route('monitoring.kadaluarsa') }}"
-               class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-600">
+               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-600 transition">
 
-                ⏳ Monitoring Kadaluarsa
+                ⏳ <span>Monitoring Kadaluarsa</span>
 
             </a>
 
             <a href="{{ route('penjualans.index') }}"
-               class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-600">
+               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-600 transition">
 
-                🛒 Transaksi
+                🛒 <span>Transaksi</span>
 
             </a>
 
@@ -80,17 +102,21 @@
 
         @if(auth()->user()->role == 'kasir')
 
-            <a href="{{ route('dashboard') }}"
-               class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-600">
+            <p class="text-xs uppercase text-blue-300 font-semibold px-3 mt-4 mb-2">
+                Kasir
+            </p>
 
-                📊 Dashboard
+            <a href="{{ route('dashboard') }}"
+               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-600 transition">
+
+                📊 <span>Dashboard</span>
 
             </a>
 
             <a href="{{ route('penjualans.index') }}"
-               class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-600">
+               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-600 transition">
 
-                🛒 Transaksi
+                🛒 <span>Transaksi</span>
 
             </a>
 

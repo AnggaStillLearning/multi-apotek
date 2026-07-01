@@ -36,7 +36,12 @@ class User extends Authenticatable
         ];
     }
     public function apotek()
-{
-    return $this->belongsTo(Apotek::class);
-}
+    {
+        return $this->belongsTo(Apotek::class);
+    }
+
+    public function penjualans()
+    {
+        return $this->hasMany(Penjualan::class);
+    }
 }

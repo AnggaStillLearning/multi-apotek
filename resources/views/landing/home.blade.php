@@ -3,28 +3,31 @@
 @section('content')
 
 <!-- HERO -->
-<section class="bg-gradient-to-br from-green-50 to-white">
+<section class="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-green-50">
 
-    <div class="max-w-7xl mx-auto px-6 py-20">
+    <div class="absolute -top-24 -left-24 w-96 h-96 bg-green-200 rounded-full blur-3xl opacity-40"></div>
 
-        <div class="grid lg:grid-cols-2 gap-12 items-center">
+    <div class="absolute bottom-0 right-0 w-96 h-96 bg-blue-200 rounded-full blur-3xl opacity-40"></div>
 
-            <!-- Kiri -->
+    <div class="relative max-w-7xl mx-auto px-6 py-24">
+
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+
             <div>
 
-                <span class="inline-block bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+                <span class="inline-flex items-center gap-2 bg-green-100 text-green-700 px-5 py-2 rounded-full font-semibold">
 
-                    💊 Sistem Monitoring Multi Apotek
+                    💊 SIMPATI
 
                 </span>
 
-                <h1 class="text-5xl font-extrabold text-gray-800 leading-tight">
+                <h1 class="mt-8 text-6xl font-extrabold leading-tight text-gray-800">
 
                     Temukan Obat
 
                     <span class="text-green-600">
 
-                        Lebih Cepat
+                        Dengan Cepat
 
                     </span>
 
@@ -32,56 +35,51 @@
 
                 </h1>
 
-                <p class="mt-6 text-lg text-gray-600 leading-relaxed">
+                <p class="mt-8 text-xl text-gray-600 leading-9">
 
-                    Cari obat yang Anda butuhkan dan lihat apotek mana yang
-                    memiliki stok tersedia secara cepat dan akurat.
+                    SIMPATI membantu masyarakat mencari obat yang tersedia
+                    pada berbagai apotek secara cepat, mudah,
+                    dan akurat.
 
                 </p>
 
-                <!-- Search -->
-                <div class="mt-10">
+                <form class="mt-10">
 
-                    <form>
+                    <div class="bg-white rounded-2xl shadow-2xl p-2 flex">
 
-                        <div class="flex bg-white rounded-2xl shadow-lg overflow-hidden">
+                        <input
+                            type="text"
+                            placeholder="Cari nama obat..."
+                            class="flex-1 px-6 outline-none">
 
-                            <input
-                                type="text"
-                                placeholder="Cari Paracetamol, Amoxicillin, Vitamin..."
-                                class="w-full px-6 py-4 outline-none">
+                        <button
+                            class="bg-green-600 hover:bg-green-700 transition text-white rounded-xl px-8 py-4">
 
-                            <button
-                                class="bg-green-600 hover:bg-green-700 transition text-white px-8">
+                            Cari
 
-                                Cari
+                        </button>
 
-                            </button>
+                    </div>
 
-                        </div>
+                </form>
 
-                    </form>
-
-                </div>
-
-                <!-- Feature -->
-                <div class="flex flex-wrap gap-6 mt-8 text-gray-600">
+                <div class="flex gap-8 mt-10">
 
                     <div>
 
-                        ✅ Update Stok
+                        ✅ Multi Apotek
 
                     </div>
 
                     <div>
 
-                        🏥 Multi Apotek
+                        ⚡ Real Time
 
                     </div>
 
                     <div>
 
-                        ⚡ Cepat & Akurat
+                        🔍 Pencarian Cepat
 
                     </div>
 
@@ -89,15 +87,6 @@
 
             </div>
 
-            <!-- Kanan -->
-            <div class="flex justify-center">
-
-                <img
-                    src="{{ asset('images/hero-pharmacy.png') }}"
-                    class="max-w-lg w-full"
-                    alt="Hero">
-
-            </div>
 
         </div>
 
@@ -106,147 +95,119 @@
 </section>
 <!-- ================= STATISTIK ================= -->
 
-<section class="py-20 bg-white">
+<section class="bg-gray-50 py-24">
 
-    <div class="max-w-7xl mx-auto px-6">
+<div class="max-w-7xl mx-auto px-6">
 
-        <div class="text-center mb-14">
+<div class="text-center mb-16">
 
-            <h2 class="text-4xl font-bold text-gray-800">
+<h2 class="text-4xl font-bold">
 
-                Sistem Multi Apotek dalam Angka
+Mengapa Menggunakan SIMPATI?
 
-            </h2>
+</h2>
 
-            <p class="mt-4 text-gray-500">
+<p class="mt-4 text-gray-500">
 
-                Informasi terbaru mengenai jaringan apotek yang tergabung.
+Platform pencarian obat berbasis multi apotek.
 
-            </p>
+</p>
 
-        </div>
+</div>
 
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
 
-            <!-- Apotek -->
+<div class="bg-white rounded-3xl p-8 shadow hover:-translate-y-2 hover:shadow-2xl transition">
 
-            <div
-                class="bg-white border rounded-3xl p-8 text-center
-                       shadow-sm hover:shadow-xl transition duration-300">
+<div class="w-16 h-16 rounded-2xl bg-green-100 flex items-center justify-center text-3xl">
 
-                <div
-                    class="w-20 h-20 mx-auto rounded-full
-                           bg-green-100 flex items-center justify-center
-                           text-4xl">
+🏥
 
-                    🏥
+</div>
 
-                </div>
+<h3 class="mt-6 text-5xl font-bold text-green-600">
 
-                <h3 class="text-5xl font-bold mt-6 text-green-600">
+15
 
-                    15
+</h3>
 
-                </h3>
+<p class="mt-2 text-gray-600">
 
-                <p class="mt-3 text-gray-600">
+Apotek Terdaftar
 
-                    Apotek
+</p>
 
-                </p>
+</div>
 
-            </div>
+<div class="bg-white rounded-3xl p-8 shadow hover:-translate-y-2 hover:shadow-2xl transition">
 
-            <!-- Obat -->
+<div class="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center text-3xl">
 
-            <div
-                class="bg-white border rounded-3xl p-8 text-center
-                       shadow-sm hover:shadow-xl transition duration-300">
+💊
 
-                <div
-                    class="w-20 h-20 mx-auto rounded-full
-                           bg-blue-100 flex items-center justify-center
-                           text-4xl">
+</div>
 
-                    💊
+<h3 class="mt-6 text-5xl font-bold text-blue-600">
 
-                </div>
+2.560
 
-                <h3 class="text-5xl font-bold mt-6 text-blue-600">
+</h3>
 
-                    2.560
+<p class="mt-2 text-gray-600">
 
-                </h3>
+Jenis Obat
 
-                <p class="mt-3 text-gray-600">
+</p>
 
-                    Jenis Obat
+</div>
 
-                </p>
+<div class="bg-white rounded-3xl p-8 shadow hover:-translate-y-2 hover:shadow-2xl transition">
 
-            </div>
+<div class="w-16 h-16 rounded-2xl bg-yellow-100 flex items-center justify-center text-3xl">
 
-            <!-- Stok -->
+📦
 
-            <div
-                class="bg-white border rounded-3xl p-8 text-center
-                       shadow-sm hover:shadow-xl transition duration-300">
+</div>
 
-                <div
-                    class="w-20 h-20 mx-auto rounded-full
-                           bg-yellow-100 flex items-center justify-center
-                           text-4xl">
+<h3 class="mt-6 text-5xl font-bold text-yellow-500">
 
-                    📦
+18K
 
-                </div>
+</h3>
 
-                <h3 class="text-5xl font-bold mt-6 text-yellow-600">
+<p class="mt-2 text-gray-600">
 
-                    18K
+Total Stok
 
-                </h3>
+</p>
 
-                <p class="mt-3 text-gray-600">
+</div>
 
-                    Total Stok
+<div class="bg-white rounded-3xl p-8 shadow hover:-translate-y-2 hover:shadow-2xl transition">
 
-                </p>
+<div class="w-16 h-16 rounded-2xl bg-purple-100 flex items-center justify-center text-3xl">
 
-            </div>
+🛒
 
-            <!-- User -->
+</div>
 
-            <div
-                class="bg-white border rounded-3xl p-8 text-center
-                       shadow-sm hover:shadow-xl transition duration-300">
+<h3 class="mt-6 text-5xl font-bold text-purple-600">
 
-                <div
-                    class="w-20 h-20 mx-auto rounded-full
-                           bg-purple-100 flex items-center justify-center
-                           text-4xl">
+12K
 
-                    👥
+</h3>
 
-                </div>
+<p class="mt-2 text-gray-600">
 
-                <h3 class="text-5xl font-bold mt-6 text-purple-600">
+Transaksi
 
-                    500+
+</p>
 
-                </h3>
+</div>
 
-                <p class="mt-3 text-gray-600">
+</div>
 
-                    Pengguna
-
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
+</div>
 
 </section>
 

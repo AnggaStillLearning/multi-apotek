@@ -10,80 +10,121 @@
 
 @if(session('error'))
 
-<div
-    class="bg-red-100 border border-red-400
-           text-red-700 px-4 py-3 rounded mb-4">
-
+<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
     {{ session('error') }}
-
 </div>
 
 @endif
 
-<form action="{{ route('penjualans.store') }}"
-      method="POST">
+<form action="{{ route('penjualans.store') }}" method="POST">
 
     @csrf
 
-    <div class="mb-4">
+    <div id="items">
 
-        <label class="block mb-2">
-            Pilih Obat
-        </label>
+        <div class="item border rounded-lg p-4 mb-4">
 
-        <select
-            name="obat_id"
-            id="obat_id"
-            class="w-full border rounded p-2">
+            <div class="grid grid-cols-12 gap-4">
 
-            <option value="">
-                Pilih Obat
-            </option>
+                <div class="col-span-7">
 
-            @foreach($obats as $obat)
+                    <label class="block mb-2">
+                        Pilih Obat
+                    </label>
 
-            <option
-                value="{{ $obat->id }}"
-                data-stok="{{ $obat->stok }}">
+                    <select
+                        name="nama_obat[]"
+                        class="obat w-full border rounded p-2">
 
-                {{ $obat->nama_obat }}
-                (Stok: {{ $obat->stok }})
+                        <option value="">
+                            Pilih Obat
+                        </option>
 
-            </option>
+                    @foreach($obats as $obat)
 
-            @endforeach
+                        <option
+                            value="{{ $obat->nama_obat }}"
+                            data-harga="0">
 
-        </select>
+                            {{ $obat->nama_obat }}
 
-    </div>
+                        </option>
 
-    <div class="mb-4">
+                    @endforeach
 
-        <label class="block mb-2">
-            Jumlah
-        </label>
+                    </select>
 
-        <input
-            type="number"
-            name="qty"
-            id="qty"
-            min="1"
-            class="w-full border rounded p-2">
+                    <small class="stok text-gray-500"></small>
 
-        <small
-            id="infoStok"
-            class="text-gray-500">
-        </small>
+                </div>
+
+                <div class="col-span-3">
+
+                    <label class="block mb-2">
+                        Qty
+                    </label>
+
+                    <input
+                        type="number"
+                        name="qty[]"
+                        value="1"
+                        min="1"
+                        class="qty w-full border rounded p-2">
+
+                </div>
+
+                <div class="col-span-2 flex items-end">
+
+                    <button
+                        type="button"
+                        class="hapus bg-red-600 text-white px-3 py-2 rounded w-full">
+
+                        Hapus
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
 
     <button
-        type="submit"
+        type="button"
+        id="tambah"
         class="bg-blue-600 text-white px-4 py-2 rounded">
 
-        Simpan
+        + Tambah Obat
 
     </button>
+
+    <hr class="my-6">
+
+    <div class="text-right">
+
+        <h2 class="text-2xl font-bold">
+
+            Total :
+            <span id="total">
+                Rp 0
+            </span>
+
+        </h2>
+
+    </div>
+
+    <div class="mt-6">
+
+        <button
+            class="bg-green-600 text-white px-6 py-3 rounded">
+
+            Simpan Transaksi
+
+        </button>
+
+    </div>
 
 </form>
 
@@ -91,39 +132,234 @@
 
 <script>
 
-const obatSelect =
-document.getElementById('obat_id');
+const items = document.getElementById('items');
 
-const qtyInput =
-document.getElementById('qty');
+/*
+|--------------------------------------------------------------------------
+| Tambah Item
+|--------------------------------------------------------------------------
+*/
 
-const infoStok =
-document.getElementById('infoStok');
+document.getElementById('tambah').onclick = function(){
 
-obatSelect.addEventListener('change', function () {
+    let clone =
+    document.querySelector('.item')
+    .cloneNode(true);
 
-    const stok =
-    this.options[this.selectedIndex]
-        .dataset.stok;
+    clone.querySelector('.obat').selectedIndex = 0;
 
-    qtyInput.max = stok;
+    clone.querySelector('.qty').value = 1;
 
-    infoStok.innerText =
-        'Stok tersedia : ' + stok;
+    clone.querySelector('.qty').max = '';
 
-});
+    clone.querySelector('.stok').innerHTML = '';
 
-qtyInput.addEventListener('input', function () {
+    items.appendChild(clone);
 
-    const max =
-    parseInt(this.max);
+    updateDropdowns();
 
-    if(this.value > max)
-    {
-        this.value = max;
+    hitungTotal();
+
+};
+
+/*
+|--------------------------------------------------------------------------
+| Hapus Item
+|--------------------------------------------------------------------------
+*/
+
+document.addEventListener('click', function(e){
+
+    if(e.target.classList.contains('hapus')){
+
+        let totalItem =
+        document.querySelectorAll('.item');
+
+        if(totalItem.length > 1){
+
+            e.target.closest('.item').remove();
+
+            updateDropdowns();
+
+            hitungTotal();
+
+        }
+
     }
 
 });
+
+/*
+|--------------------------------------------------------------------------
+| Pilih Obat
+|--------------------------------------------------------------------------
+*/
+
+document.addEventListener('change', async function (e) {
+
+    if (!e.target.classList.contains('obat')) {
+        return;
+    }
+
+    const namaObat = e.target.value;
+
+    if (namaObat === '') {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "/obat/info/" + encodeURIComponent(namaObat)
+        );
+
+        const data = await response.json();
+
+        const item = e.target.closest('.item');
+
+        item.querySelector('.stok').innerHTML =
+            "Stok tersedia : " + data.stok;
+
+        item.querySelector('.qty').max =
+            data.stok;
+
+        e.target.selectedOptions[0].dataset.harga =
+            data.harga;
+
+        hitungTotal();
+
+        updateDropdowns();
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| Qty
+|--------------------------------------------------------------------------
+*/
+
+document.addEventListener('input', function(e){
+
+    if(e.target.classList.contains('qty')){
+
+        let max =
+        parseInt(e.target.max);
+
+        if(max && parseInt(e.target.value) > max){
+
+            e.target.value = max;
+
+        }
+
+        if(e.target.value < 1){
+
+            e.target.value = 1;
+
+        }
+
+        hitungTotal();
+
+    }
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| Hitung Total
+|--------------------------------------------------------------------------
+*/
+
+function hitungTotal(){
+
+    let total = 0;
+
+    document.querySelectorAll('.item').forEach(function(item){
+
+        const select = item.querySelector('.obat');
+
+        const harga = Number(
+            select.selectedOptions[0]?.dataset.harga ?? 0
+        );
+
+        const qty = Number(
+            item.querySelector('.qty').value ?? 0
+        );
+
+        total += harga * qty;
+
+    });
+
+    document.getElementById('total').innerHTML =
+        'Rp ' + total.toLocaleString('id-ID');
+
+}
+
+/*
+|--------------------------------------------------------------------------
+| Disable Obat Yang Sudah Dipilih
+|--------------------------------------------------------------------------
+*/
+
+function updateDropdowns(){
+
+    let selected = [];
+
+    document.querySelectorAll('.obat').forEach(function(select){
+
+        if(select.value !== ''){
+
+            selected.push(select.value);
+
+        }
+
+    });
+
+    document.querySelectorAll('.obat').forEach(function(currentSelect){
+
+        currentSelect.querySelectorAll('option').forEach(function(option){
+
+            if(option.value === ''){
+
+                option.disabled = false;
+
+                return;
+
+            }
+
+            if(
+                selected.includes(option.value) &&
+                option.value !== currentSelect.value
+            ){
+
+                option.disabled = true;
+
+            }else{
+
+                option.disabled = false;
+
+            }
+
+        });
+
+    });
+
+}
+
+/*
+|--------------------------------------------------------------------------
+| Pertama Kali Halaman Dibuka
+|--------------------------------------------------------------------------
+*/
+
+updateDropdowns();
+
+hitungTotal();
 
 </script>
 

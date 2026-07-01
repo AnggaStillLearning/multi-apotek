@@ -1,12 +1,14 @@
 @php
 
+use App\Models\Obat;
+
 $stokNotif = 0;
 $expiredNotif = 0;
 $totalNotif = 0;
 
-if(auth()->check()) {
+if(auth()->check()){
 
-    $stokNotif = \App\Models\Obat::where(
+    $stokNotif = Obat::where(
         'apotek_id',
         auth()->user()->apotek_id
     )
@@ -17,7 +19,7 @@ if(auth()->check()) {
     )
     ->count();
 
-    $expiredNotif = \App\Models\Obat::where(
+    $expiredNotif = Obat::where(
         'apotek_id',
         auth()->user()->apotek_id
     )
@@ -27,51 +29,48 @@ if(auth()->check()) {
     )
     ->count();
 
-    $totalNotif = $stokNotif + $expiredNotif;
+    $totalNotif =
+    $stokNotif + $expiredNotif;
+
 }
 
 @endphp
 
-<div class="flex justify-end items-center gap-4">
+<div
+class="flex justify-end items-center gap-6">
 
-    <!-- Notification -->
-    <div class="relative" x-data="{ open: false }">
+    {{-- ================= NOTIFIKASI ================= --}}
+
+    <div
+    class="relative"
+    x-data="{ notif:false }">
 
         <button
-            @click="open = !open"
-            class="relative flex items-center justify-center
-                   w-10 h-10 rounded-full
-                   hover:bg-gray-100 transition">
+        @click="notif=!notif"
+        class="relative w-11 h-11
+               rounded-full
+               bg-white
+               shadow
+               hover:bg-gray-100
+               transition">
 
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 class="w-6 h-6 text-gray-700"
-                 fill="none"
-                 viewBox="0 0 24 24"
-                 stroke="currentColor">
+            🔔
 
-                <path stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15 17h5l-1.405-1.405A2.032
-                      2.032 0 0118 14.158V11a6.002
-                      6.002 0 00-4-5.659V5a2
-                      2 0 10-4 0v.341C7.67
-                      6.165 6 8.388 6 11v3.159c0
-                      .538-.214 1.055-.595
-                      1.436L4 17h5m6 0v1a3
-                      3 0 11-6 0v-1m6 0H9" />
-            </svg>
-
-            @if($totalNotif > 0)
+            @if($totalNotif)
 
             <span
-                class="absolute -top-1 -right-1
-                       bg-red-500 text-white
-                       text-xs font-bold
-                       rounded-full
-                       min-w-[20px]
-                       h-5
-                       flex items-center justify-center">
+            class="absolute
+                   -top-1
+                   -right-1
+                   bg-red-500
+                   text-white
+                   text-xs
+                   w-5
+                   h-5
+                   rounded-full
+                   flex
+                   items-center
+                   justify-center">
 
                 {{ $totalNotif }}
 
@@ -82,60 +81,92 @@ if(auth()->check()) {
         </button>
 
         <div
-            x-show="open"
-            @click.outside="open = false"
-            x-transition
-            class="absolute right-0 mt-2
-                   w-80 bg-white
-                   rounded-xl shadow-xl
-                   border z-50"
-            style="display: none;">
+        x-show="notif"
+        @click.outside="notif=false"
+        x-transition
+        class="absolute
+               right-0
+               mt-3
+               w-80
+               bg-white
+               rounded-2xl
+               shadow-xl
+               border
+               overflow-hidden"
+        style="display:none">
 
-            <div class="px-4 py-3 border-b">
+            <div
+            class="px-5 py-4
+                   border-b">
 
-                <h3 class="font-semibold text-gray-800">
+                <h3
+                class="font-bold">
+
                     Notifikasi
+
                 </h3>
 
             </div>
 
-            @if($stokNotif > 0)
+            @if($stokNotif)
 
-            <div class="px-4 py-3 border-b">
+            <div
+            class="px-5 py-4
+                   border-b
+                   hover:bg-gray-50">
 
-                <div class="font-medium text-red-600">
+                <div class="font-semibold text-red-600">
+
                     ⚠ Stok Kritis
+
                 </div>
 
-                <div class="text-sm text-gray-600">
-                    {{ $stokNotif }} obat perlu restock
-                </div>
+                <div class="text-sm text-gray-500">
 
-            </div>
+                    {{ $stokNotif }}
+                    obat perlu direstock.
 
-            @endif
-
-            @if($expiredNotif > 0)
-
-            <div class="px-4 py-3">
-
-                <div class="font-medium text-yellow-600">
-                    ⏳ Mendekati Kadaluarsa
-                </div>
-
-                <div class="text-sm text-gray-600">
-                    {{ $expiredNotif }} obat perlu diperiksa
                 </div>
 
             </div>
 
             @endif
 
-            @if($totalNotif == 0)
+            @if($expiredNotif)
 
-            <div class="px-4 py-6 text-center text-gray-500">
+            <div
+            class="px-5 py-4
+                   hover:bg-gray-50">
 
-                Tidak ada notifikasi
+                <div
+                class="font-semibold
+                       text-yellow-600">
+
+                    ⏳ Kadaluarsa
+
+                </div>
+
+                <div
+                class="text-sm
+                       text-gray-500">
+
+                    {{ $expiredNotif }}
+                    obat mendekati kadaluarsa.
+
+                </div>
+
+            </div>
+
+            @endif
+
+            @if($totalNotif==0)
+
+            <div
+            class="p-6
+                   text-center
+                   text-gray-400">
+
+                Tidak ada notifikasi.
 
             </div>
 
@@ -145,20 +176,177 @@ if(auth()->check()) {
 
     </div>
 
-    <!-- Logout -->
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
+    {{-- ================= PROFILE ================= --}}
+
+    <div
+    class="relative"
+    x-data="{ profile:false }">
 
         <button
-            type="submit"
-            class="bg-red-500 hover:bg-red-600
-                   text-white px-4 py-2
-                   rounded-lg transition">
+        @click="profile=!profile"
+        class="flex
+               items-center
+               gap-3
+               bg-white
+               rounded-full
+               shadow
+               pl-2
+               pr-4
+               py-2
+               hover:bg-gray-50">
 
-            Logout
+            <div
+            class="w-11
+                   h-11
+                   rounded-full
+                   bg-blue-600
+                   text-white
+                   flex
+                   items-center
+                   justify-center
+                   font-bold">
+
+                {{ strtoupper(substr(auth()->user()->name,0,1)) }}
+
+            </div>
+
+            <div class="text-left">
+
+                <div
+                class="font-semibold">
+
+                    {{ auth()->user()->name }}
+
+                </div>
+
+                <div
+                class="text-xs
+                       text-gray-500">
+
+                    {{ ucwords(str_replace('_',' ',auth()->user()->role)) }}
+
+                </div>
+
+            </div>
 
         </button>
 
-    </form>
+        <div
+        x-show="profile"
+        @click.outside="profile=false"
+        x-transition
+        class="absolute
+               right-0
+               mt-3
+               w-72
+               bg-white
+               rounded-2xl
+               shadow-xl
+               border"
+        style="display:none">
+
+            <div
+            class="p-5
+                   border-b">
+
+                <div
+                class="flex
+                       items-center
+                       gap-3">
+
+                    <div
+                    class="w-14
+                           h-14
+                           rounded-full
+                           bg-blue-600
+                           text-white
+                           flex
+                           items-center
+                           justify-center
+                           text-xl
+                           font-bold">
+
+                        {{ strtoupper(substr(auth()->user()->name,0,1)) }}
+
+                    </div>
+
+                    <div>
+
+                        <div
+                        class="font-bold">
+
+                            {{ auth()->user()->name }}
+
+                        </div>
+
+                        <div
+                        class="text-sm
+                               text-gray-500">
+
+                            {{ auth()->user()->email }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="py-2">
+
+                <a
+                href="{{ route('profile.edit') }}"
+                class="block
+                       px-5
+                       py-3
+                       hover:bg-gray-100">
+
+                    👤 Profil Saya
+
+                </a>
+
+                <a
+                href="#"
+                class="block
+                       px-5
+                       py-3
+                       hover:bg-gray-100">
+
+                    ⚙ Pengaturan
+
+                </a>
+
+            </div>
+
+            <div
+            class="border-t
+                   p-3">
+
+                <form
+                method="POST"
+                action="{{ route('logout') }}">
+
+                    @csrf
+
+                    <button
+                    class="w-full
+                           bg-red-500
+                           hover:bg-red-600
+                           text-white
+                           rounded-xl
+                           py-3">
+
+                        Logout
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>

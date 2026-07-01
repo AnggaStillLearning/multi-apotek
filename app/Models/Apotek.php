@@ -3,12 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Apotek extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
+
         'nama_apotek',
-        'alamat'
+
+        'alamat',
+
+        'latitude',
+
+        'longitude'
+
     ];
 
     public function users()
@@ -19,5 +29,10 @@ class Apotek extends Model
     public function obats()
     {
         return $this->hasMany(Obat::class);
+    }
+
+    public function penjualans()
+    {
+        return $this->hasMany(Penjualan::class);
     }
 }

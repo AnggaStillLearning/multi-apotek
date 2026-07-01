@@ -9,42 +9,20 @@ class KategoriSeeder extends Seeder
 {
     public function run(): void
     {
-        $kategori = [
+        $data = [
 
-            [
-                'nama_kategori' => 'Analgesik',
-                'deskripsi' => 'Obat pereda nyeri',
-                'icon' => '💊'
-            ],
-
-            [
-                'nama_kategori' => 'Antibiotik',
-                'deskripsi' => 'Obat infeksi bakteri',
-                'icon' => '🦠'
-            ],
-
-            [
-                'nama_kategori' => 'Vitamin',
-                'deskripsi' => 'Suplemen vitamin',
-                'icon' => '🍊'
-            ],
-
-            [
-                'nama_kategori' => 'Antihistamin',
-                'deskripsi' => 'Obat alergi',
-                'icon' => '🌿'
-            ],
-
-            [
-                'nama_kategori' => 'Obat Lambung',
-                'deskripsi' => 'Obat gangguan lambung',
-                'icon' => '🫃'
-            ],
+            ['nama' => 'Generik'],
+            ['nama' => 'Paten'],
+            ['nama' => 'Obat Bebas'],
+            ['nama' => 'Obat Bebas Terbatas'],
+            ['nama' => 'Obat Keras'],
 
         ];
 
-        foreach ($kategori as $item) {
+        foreach ($data as $item) {
+
             Kategori::create($item);
+
         }
     }
 }

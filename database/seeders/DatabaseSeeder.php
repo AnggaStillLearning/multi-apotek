@@ -15,8 +15,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-    $this->call([
-        ObatSeeder::class,
-    ]);
-}
+        $this->call([
+            ApotekSeeder::class,
+            JenisObatSeeder::class,
+            KategoriSeeder::class,
+            UserSeeder::class,
+
+        ]);
+        \App\Models\Obat::factory(100)->create();
+    }
 }

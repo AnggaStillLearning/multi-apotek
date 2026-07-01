@@ -92,6 +92,11 @@ Route::middleware([
 
 });
 
+Route::get(
+    '/obat/info/{nama}',
+    [PenjualanController::class, 'getInfoObat']
+)->name('obat.info');
+
 /*
 |--------------------------------------------------------------------------
 | PROFILE

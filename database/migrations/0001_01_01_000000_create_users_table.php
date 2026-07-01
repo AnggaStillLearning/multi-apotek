@@ -23,6 +23,17 @@ return new class extends Migration
 
             $table->string('password');
 
+            // Role User
+            $table->enum('role', [
+                'super_admin',
+                'admin_apotek',
+                'kasir',
+                'pembeli'
+            ])->default('pembeli');
+
+            // Relasi Apotek
+            $table->unsignedBigInteger('apotek_id')->nullable();
+
             $table->rememberToken();
 
             $table->timestamps();
