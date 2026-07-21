@@ -73,81 +73,119 @@
 
     </div>
 
-    <table class="w-full border">
+    <table class="w-full overflow-hidden rounded-xl">
 
-        <thead class="bg-gray-100">
+    <thead class="bg-blue-600 text-white">
 
-            <tr>
+        <tr>
 
-                <th class="border p-3">Obat</th>
+            <th class="p-3 text-left">Obat</th>
 
-                <th class="border p-3">Harga</th>
+            <th class="p-3 text-left">Batch</th>
 
-                <th class="border p-3">Qty</th>
+            <th class="p-3 text-left">Kadaluarsa</th>
 
-                <th class="border p-3">Subtotal</th>
+            <th class="p-3 text-right">Harga</th>
 
-            </tr>
+            <th class="p-3 text-center">Qty</th>
 
-        </thead>
+            <th class="p-3 text-right">Subtotal</th>
 
-        <tbody>
+        </tr>
 
-            @foreach($penjualan->details as $detail)
+    </thead>
 
-            <tr>
+    <tbody>
 
-                <td class="border p-3">
+        @forelse($penjualan->details as $detail)
+
+        <tr class="border-b hover:bg-gray-50">
+
+            <td class="p-3">
+
+                <div class="font-semibold">
 
                     {{ $detail->obat->nama_obat }}
 
-                </td>
+                </div>
 
-                <td class="border p-3">
+            </td>
 
-                    Rp {{ number_format($detail->harga,0,',','.') }}
+            <td class="p-3">
 
-                </td>
+                <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded">
 
-                <td class="border p-3">
+                    {{ $detail->obat->batch }}
 
-                    {{ $detail->qty }}
+                </span>
 
-                </td>
+            </td>
 
-                <td class="border p-3">
+            <td class="p-3">
 
-                    Rp {{ number_format($detail->subtotal,0,',','.') }}
+                {{ \Carbon\Carbon::parse(
+                    $detail->obat->tanggal_kadaluarsa
+                )->format('d M Y') }}
 
-                </td>
+            </td>
 
-            </tr>
+            <td class="p-3 text-right">
 
-            @endforeach
+                Rp {{ number_format($detail->harga,0,',','.') }}
 
-        </tbody>
+            </td>
 
-        <tfoot>
+            <td class="p-3 text-center">
 
-            <tr>
+                {{ $detail->qty }}
 
-                <th colspan="3" class="border p-3 text-right">
+            </td>
 
-                    Total
+            <td class="p-3 text-right font-semibold">
 
-                </th>
+                Rp {{ number_format($detail->subtotal,0,',','.') }}
 
-                <th class="border p-3">
+            </td>
 
-                    Rp {{ number_format($penjualan->total_harga,0,',','.') }}
+        </tr>
 
-                </th>
+        @empty
 
-            </tr>
+        <tr>
 
-        </tfoot>
+            <td colspan="6" class="text-center py-6 text-gray-500">
 
-    </table>
+                Tidak ada detail transaksi.
+
+            </td>
+
+        </tr>
+
+        @endforelse
+
+    </tbody>
+
+    <tfoot>
+
+        <tr class="bg-gray-100">
+
+            <th colspan="5" class="text-right p-4">
+
+                Total Transaksi
+
+            </th>
+
+            <th class="text-right p-4 text-green-700 text-lg">
+
+                Rp {{ number_format($penjualan->total_harga,0,',','.') }}
+
+            </th>
+
+        </tr>
+
+    </tfoot>
+
+</table>
 
 </div>
 

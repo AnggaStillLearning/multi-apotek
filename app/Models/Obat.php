@@ -9,47 +9,56 @@ class Obat extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+   protected $fillable = [
 
-        'apotek_id',
+    'apotek_id',
 
-        'jenis_obat_id',
+    'kategori_id',
 
-        'kategori_id',
+    'jenis_obat_id',
 
-        'nama_obat',
+    'nama_obat',
 
-        'batch',
+    'harga_beli_default',
 
-        'harga_beli',
+    'stok_minimum',
 
-        'harga_jual',
+    'total_stok',
 
-        'stok',
+    'deskripsi',
 
-        'stok_minimum',
+];
 
-        'tanggal_kadaluarsa'
-
-    ];
+    /*
+    |--------------------------------------------------------------------------
+    | Relationship
+    |--------------------------------------------------------------------------
+    */
 
     public function apotek()
     {
         return $this->belongsTo(Apotek::class);
     }
 
-    public function jenisObat()
-    {
-        return $this->belongsTo(JenisObat::class);
-    }
-
     public function kategori()
     {
-        return $this->belongsTo(Kategori::class);
+        return $this->belongsTo(Kategori::class,'kategori_id');
     }
 
-    public function penjualanDetails()
+    public function jenis()
     {
-        return $this->hasMany(PenjualanDetail::class);
+        return $this->belongsTo(JenisObat::class,'jenis_obat_id');
     }
+
+    public function konversis()
+{
+    return $this->hasMany(KonversiObat::class)
+                ->orderBy('isi');
+}
+
+    public function batchObats()
+    {
+        return $this->hasMany(BatchObat::class);
+    }
+
 }

@@ -3,45 +3,51 @@
 namespace App\Http\Controllers;
 
 use App\Models\Obat;
+use App\Models\BatchObat;
+use Illuminate\Support\Collection;
 
 class MonitoringController extends Controller
 {
     public function stokKritis()
-    {
-        $obats = Obat::where(
-            'apotek_id',
-            auth()->user()->apotek_id
-        )
-        ->whereColumn(
-            'stok',
-            '<=',
-            'stok_minimum'
-        )
-        ->get();
+{
+    $apotekId = auth()->user()->apotek_id;
 
-        return view(
-            'monitoring.stok-kritis',
-            compact('obats')
-        );
-    }
+    $obats = Obat::where('apotek_id', $apotekId)
+        ->whereColumn('total_stok', '<=', 'stok_minimum')
+        ->orderBy('total_stok')
+        ->paginate(10);
+
+    return view(
+        'monitoring.stok-kritis',
+        compact('obats')
+    );
+}
 
     public function kadaluarsa()
-    {
-        $obats = Obat::where(
-            'apotek_id',
-            auth()->user()->apotek_id
-        )
-        ->whereDate(
+{
+    $apotekId = auth()->user()->apotek_id;
+
+    $obats = BatchObat::with([
+            'obat',
+            'gudang',
+            'ruangan'
+        ])
+        ->whereHas('obat', function ($q) use ($apotekId) {
+            $q->where('apotek_id', $apotekId);
+        })
+        ->whereBetween(
             'tanggal_kadaluarsa',
-            '<=',
-            now()->addDays(30)
+            [
+                now(),
+                now()->addDays(30)
+            ]
         )
         ->orderBy('tanggal_kadaluarsa')
-        ->get();
+        ->paginate(10);
 
-        return view(
-            'monitoring.kadaluarsa',
-            compact('obats')
-        );
-    }
+    return view(
+        'monitoring.kadaluarsa',
+        compact('obats')
+    );
+}
 }

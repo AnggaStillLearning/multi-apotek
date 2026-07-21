@@ -2,115 +2,193 @@
 
 @section('content')
 
-<h1 class="text-3xl font-bold mb-6">
-    Monitoring Kadaluarsa
-</h1>
+<div class="mb-8">
+
+    <h1 class="text-3xl font-bold text-gray-800">
+        Monitoring Kadaluarsa
+    </h1>
+
+    <p class="text-gray-500 mt-2">
+        Daftar batch obat yang mendekati tanggal kadaluarsa dalam 30 hari ke depan.
+    </p>
+
+</div>
 
 <div class="bg-white rounded-xl shadow overflow-hidden">
 
-<table class="w-full">
+    <table class="min-w-full">
 
-    <thead class="bg-gray-100">
+        <thead class="bg-gray-100">
 
-        <tr>
-            <th class="p-4 text-left">
-                Nama Obat
-            </th>
+            <tr>
 
-            <th class="p-4 text-left">
-                Tanggal Kadaluarsa
-            </th>
+                <th class="px-6 py-4 text-left">
+                    Nama Obat
+                </th>
 
-            <th class="p-4 text-left">
-                Sisa Hari
-            </th>
+                <th class="px-6 py-4 text-center">
+                    Batch
+                </th>
 
-            <th class="p-4 text-left">
-                Status
-            </th>
-        </tr>
+                <th class="px-6 py-4 text-center">
+                    Gudang
+                </th>
 
-    </thead>
+                <th class="px-6 py-4 text-center">
+                    Ruangan
+                </th>
 
-    <tbody>
+                <th class="px-6 py-4 text-center">
+                    Stok Batch
+                </th>
 
-    @forelse($obats as $obat)
-
-        @php
-            $sisaHari = (int) now()->diffInDays(
-                $obat->tanggal_kadaluarsa,
-                false
-            );
-        @endphp
-
-        <tr class="border-t hover:bg-gray-50">
-
-            <td class="p-4">
-                {{ $obat->nama_obat }}
-            </td>
-
-            <td class="p-4">
-                {{ \Carbon\Carbon::parse($obat->tanggal_kadaluarsa)->format('d M Y') }}
-            </td>
-
-            <td class="p-4">
-
-                @if($sisaHari <= 0)
-
+                <th class="px-6 py-4 text-center">
                     Kadaluarsa
+                </th>
 
-                @else
+                <th class="px-6 py-4 text-center">
+                    Sisa Hari
+                </th>
 
-                    {{ $sisaHari }} Hari
+                <th class="px-6 py-4 text-center">
+                    Status
+                </th>
 
-                @endif
+            </tr>
 
-            </td>
+        </thead>
 
-            <td class="p-4">
+        <tbody>
 
-                @if($sisaHari <= 7)
+            @forelse($obats as $batch)
 
-                    <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm">
-                        KRITIS
-                    </span>
+                @php
 
-                @elseif($sisaHari <= 30)
+                    $sisaHari = ceil(
+                        now()->diffInRealDays(
+                            $batch->tanggal_kadaluarsa,
+                            false
+                        )
+                    );
 
-                    <span class="bg-yellow-500 text-white px-3 py-1 rounded-full text-sm">
-                        PERINGATAN
-                    </span>
+                @endphp
 
-                @else
+                <tr class="border-t hover:bg-gray-50">
 
-                    <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm">
-                        AMAN
-                    </span>
+                    <td class="px-6 py-4 font-medium">
 
-                @endif
+                        {{ $batch->obat->nama_obat }}
 
-            </td>
+                    </td>
 
-        </tr>
+                    <td class="px-6 py-4 text-center font-mono">
 
-    @empty
+                        {{ $batch->nomor_batch }}
 
-        <tr>
-            <td colspan="4"
-                class="text-center p-6 text-gray-500">
+                    </td>
 
-                Tidak ada obat mendekati kadaluarsa
+                    <td class="px-6 py-4 text-center">
 
-            </td>
-        </tr>
+                        {{ $batch->gudang->nama_gudang }}
 
-    @endforelse
+                    </td>
 
-    </tbody>
+                    <td class="px-6 py-4 text-center">
 
-</table>
+                        {{ $batch->ruangan->nama_ruangan }}
 
+                    </td>
+
+                    <td class="px-6 py-4 text-center font-semibold">
+
+                        {{ $batch->stok }}
+
+                    </td>
+
+                    <td class="px-6 py-4 text-center">
+
+                        {{ \Carbon\Carbon::parse($batch->tanggal_kadaluarsa)->format('d M Y') }}
+
+                    </td>
+
+                    <td class="px-6 py-4 text-center">
+
+                        @if($sisaHari < 0)
+
+                            <span class="text-red-600 font-semibold">
+
+                                Kadaluarsa
+
+                            </span>
+
+                        @else
+
+                            {{ $sisaHari }} Hari
+
+                        @endif
+
+                    </td>
+
+                    <td class="px-6 py-4 text-center">
+
+                        @if($sisaHari < 0)
+
+                            <span class="px-3 py-1 rounded-full bg-gray-600 text-white text-sm">
+                                Kadaluarsa
+                            </span>
+
+                        @elseif($sisaHari <= 7)
+
+                            <span class="px-3 py-1 rounded-full bg-red-600 text-white text-sm">
+                                Segera
+                            </span>
+
+                        @elseif($sisaHari <= 30)
+
+                            <span class="px-3 py-1 rounded-full bg-yellow-500 text-white text-sm">
+                                Perhatian
+                            </span>
+
+                        @else
+
+                            <span class="px-3 py-1 rounded-full bg-green-600 text-white text-sm">
+                                Aman
+                            </span>
+
+                        @endif
+
+                    </td>
+
+                </tr>
+
+            @empty
+
+                <tr>
+
+                    <td colspan="8" class="py-10 text-center text-gray-500">
+
+                        Tidak ada batch obat yang mendekati kadaluarsa.
+
+                    </td>
+
+                </tr>
+
+            @endforelse
+
+        </tbody>
+
+    </table>
 
 </div>
+
+@if($obats->hasPages())
+
+    <div class="mt-6">
+
+        {{ $obats->links() }}
+
+    </div>
+
+@endif
 
 @endsection

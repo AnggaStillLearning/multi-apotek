@@ -3,92 +3,462 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Obat;
+use Illuminate\Support\Facades\DB;
 
 class ObatSeeder extends Seeder
 {
     public function run(): void
     {
-        $data = [
+        DB::table('obats')->insert([
 
+            // ============================================================
+            // APOTEK ID 1 (3 batch per obat)
+            // ============================================================
+
+            // ================= PARACETAMOL (PCM) =================
             [
-
                 'apotek_id' => 1,
-
                 'jenis_obat_id' => 1,
-
                 'kategori_id' => 1,
-
-                'nama_obat' => 'Paracetamol',
-
-                'batch' => 'A001',
-
-                'harga_beli' => 5000,
-
-                'harga_jual' => 8000,
-
-                'stok' => 10,
-
-                'stok_minimum' => 5,
-
-                'tanggal_kadaluarsa' => '2026-12-31',
-
-            ],
-
-            [
-
-                'apotek_id' => 1,
-
-                'jenis_obat_id' => 1,
-
-                'kategori_id' => 1,
-
-                'nama_obat' => 'Paracetamol',
-
-                'batch' => 'A002',
-
-                'harga_beli' => 5000,
-
-                'harga_jual' => 8000,
-
-                'stok' => 50,
-
-                'stok_minimum' => 5,
-
+                'nama_obat' => 'Paracetamol 500 mg',
+                'batch' => 'PCM2401',
+                'harga_beli' => 4500,
+                'harga_jual' => 6000,
+                'stok' => 80,
+                'stok_minimum' => 20,
                 'tanggal_kadaluarsa' => '2027-12-31',
-
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
-
             [
-
                 'apotek_id' => 1,
-
-                'jenis_obat_id' => 3,
-
+                'jenis_obat_id' => 1,
                 'kategori_id' => 1,
-
-                'nama_obat' => 'Amoxicillin',
-
-                'batch' => 'B001',
-
-                'harga_beli' => 7000,
-
-                'harga_jual' => 10000,
-
-                'stok' => 30,
-
-                'stok_minimum' => 10,
-
-                'tanggal_kadaluarsa' => '2027-10-10',
-
+                'nama_obat' => 'Paracetamol 500 mg',
+                'batch' => 'PCM2402',
+                'harga_beli' => 4500,
+                'harga_jual' => 6000,
+                'stok' => 45,
+                'stok_minimum' => 20,
+                'tanggal_kadaluarsa' => '2028-02-28',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'apotek_id' => 1,
+                'jenis_obat_id' => 1,
+                'kategori_id' => 1,
+                'nama_obat' => 'Paracetamol 500 mg',
+                'batch' => 'PCM2403',
+                'harga_beli' => 4500,
+                'harga_jual' => 6000,
+                'stok' => 120,
+                'stok_minimum' => 20,
+                'tanggal_kadaluarsa' => '2028-05-30',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
 
-        ];
+            // ================= AMOXICILLIN (AMX) =================
+            [
+                'apotek_id' => 1,
+                'jenis_obat_id' => 2,
+                'kategori_id' => 2,
+                'nama_obat' => 'Amoxicillin 500 mg',
+                'batch' => 'AMX2401',
+                'harga_beli' => 8500,
+                'harga_jual' => 12000,
+                'stok' => 50,
+                'stok_minimum' => 15,
+                'tanggal_kadaluarsa' => '2027-11-15',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'apotek_id' => 1,
+                'jenis_obat_id' => 2,
+                'kategori_id' => 2,
+                'nama_obat' => 'Amoxicillin 500 mg',
+                'batch' => 'AMX2402',
+                'harga_beli' => 8500,
+                'harga_jual' => 12000,
+                'stok' => 90,
+                'stok_minimum' => 15,
+                'tanggal_kadaluarsa' => '2028-04-10',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'apotek_id' => 1,
+                'jenis_obat_id' => 2,
+                'kategori_id' => 2,
+                'nama_obat' => 'Amoxicillin 500 mg',
+                'batch' => 'AMX2403',
+                'harga_beli' => 8500,
+                'harga_jual' => 12000,
+                'stok' => 70,
+                'stok_minimum' => 15,
+                'tanggal_kadaluarsa' => '2028-07-25',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
 
-        foreach ($data as $item) {
+            // ================= VITAMIN C (VTC) =================
+            [
+                'apotek_id' => 1,
+                'jenis_obat_id' => 3,
+                'kategori_id' => 3,
+                'nama_obat' => 'Vitamin C 1000 mg',
+                'batch' => 'VTC2401',
+                'harga_beli' => 12000,
+                'harga_jual' => 18000,
+                'stok' => 100,
+                'stok_minimum' => 25,
+                'tanggal_kadaluarsa' => '2028-06-20',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'apotek_id' => 1,
+                'jenis_obat_id' => 3,
+                'kategori_id' => 3,
+                'nama_obat' => 'Vitamin C 1000 mg',
+                'batch' => 'VTC2402',
+                'harga_beli' => 12000,
+                'harga_jual' => 18000,
+                'stok' => 65,
+                'stok_minimum' => 25,
+                'tanggal_kadaluarsa' => '2028-09-10',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'apotek_id' => 1,
+                'jenis_obat_id' => 3,
+                'kategori_id' => 3,
+                'nama_obat' => 'Vitamin C 1000 mg',
+                'batch' => 'VTC2403',
+                'harga_beli' => 12000,
+                'harga_jual' => 18000,
+                'stok' => 85,
+                'stok_minimum' => 25,
+                'tanggal_kadaluarsa' => '2028-11-15',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
 
-            Obat::create($item);
+            // ================= IBUPROFEN (IBU) =================
+            [
+                'apotek_id' => 1,
+                'jenis_obat_id' => 1,
+                'kategori_id' => 1,
+                'nama_obat' => 'Ibuprofen 400 mg',
+                'batch' => 'IBU2401',
+                'harga_beli' => 7000,
+                'harga_jual' => 10000,
+                'stok' => 40,
+                'stok_minimum' => 10,
+                'tanggal_kadaluarsa' => '2028-03-15',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'apotek_id' => 1,
+                'jenis_obat_id' => 1,
+                'kategori_id' => 1,
+                'nama_obat' => 'Ibuprofen 400 mg',
+                'batch' => 'IBU2402',
+                'harga_beli' => 7000,
+                'harga_jual' => 10000,
+                'stok' => 55,
+                'stok_minimum' => 10,
+                'tanggal_kadaluarsa' => '2028-06-30',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'apotek_id' => 1,
+                'jenis_obat_id' => 1,
+                'kategori_id' => 1,
+                'nama_obat' => 'Ibuprofen 400 mg',
+                'batch' => 'IBU2403',
+                'harga_beli' => 7000,
+                'harga_jual' => 10000,
+                'stok' => 30,
+                'stok_minimum' => 10,
+                'tanggal_kadaluarsa' => '2028-09-20',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
 
-        }
+            // ================= CETIRIZINE (CTZ) =================
+            [
+                'apotek_id' => 1,
+                'jenis_obat_id' => 4,
+                'kategori_id' => 3,
+                'nama_obat' => 'Cetirizine 10 mg',
+                'batch' => 'CTZ2401',
+                'harga_beli' => 3000,
+                'harga_jual' => 5000,
+                'stok' => 60,
+                'stok_minimum' => 15,
+                'tanggal_kadaluarsa' => '2028-01-20',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'apotek_id' => 1,
+                'jenis_obat_id' => 4,
+                'kategori_id' => 3,
+                'nama_obat' => 'Cetirizine 10 mg',
+                'batch' => 'CTZ2402',
+                'harga_beli' => 3000,
+                'harga_jual' => 5000,
+                'stok' => 35,
+                'stok_minimum' => 15,
+                'tanggal_kadaluarsa' => '2028-04-15',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'apotek_id' => 1,
+                'jenis_obat_id' => 4,
+                'kategori_id' => 3,
+                'nama_obat' => 'Cetirizine 10 mg',
+                'batch' => 'CTZ2403',
+                'harga_beli' => 3000,
+                'harga_jual' => 5000,
+                'stok' => 45,
+                'stok_minimum' => 15,
+                'tanggal_kadaluarsa' => '2028-07-10',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // ============================================================
+            // APOTEK ID 2 (3 batch per obat)
+            // ============================================================
+
+            // ================= PARACETAMOL (PCM) =================
+            [
+                'apotek_id' => 2,
+                'jenis_obat_id' => 1,
+                'kategori_id' => 1,
+                'nama_obat' => 'Paracetamol 500 mg',
+                'batch' => 'PCM2501',
+                'harga_beli' => 4600,
+                'harga_jual' => 6500,
+                'stok' => 90,
+                'stok_minimum' => 20,
+                'tanggal_kadaluarsa' => '2028-01-15',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'apotek_id' => 2,
+                'jenis_obat_id' => 1,
+                'kategori_id' => 1,
+                'nama_obat' => 'Paracetamol 500 mg',
+                'batch' => 'PCM2502',
+                'harga_beli' => 4600,
+                'harga_jual' => 6500,
+                'stok' => 55,
+                'stok_minimum' => 20,
+                'tanggal_kadaluarsa' => '2028-03-20',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'apotek_id' => 2,
+                'jenis_obat_id' => 1,
+                'kategori_id' => 1,
+                'nama_obat' => 'Paracetamol 500 mg',
+                'batch' => 'PCM2503',
+                'harga_beli' => 4600,
+                'harga_jual' => 6500,
+                'stok' => 110,
+                'stok_minimum' => 20,
+                'tanggal_kadaluarsa' => '2028-06-10',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // ================= AMOXICILLIN (AMX) =================
+            [
+                'apotek_id' => 2,
+                'jenis_obat_id' => 2,
+                'kategori_id' => 2,
+                'nama_obat' => 'Amoxicillin 500 mg',
+                'batch' => 'AMX2501',
+                'harga_beli' => 9000,
+                'harga_jual' => 13000,
+                'stok' => 60,
+                'stok_minimum' => 15,
+                'tanggal_kadaluarsa' => '2028-02-10',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'apotek_id' => 2,
+                'jenis_obat_id' => 2,
+                'kategori_id' => 2,
+                'nama_obat' => 'Amoxicillin 500 mg',
+                'batch' => 'AMX2502',
+                'harga_beli' => 9000,
+                'harga_jual' => 13000,
+                'stok' => 85,
+                'stok_minimum' => 15,
+                'tanggal_kadaluarsa' => '2028-05-05',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'apotek_id' => 2,
+                'jenis_obat_id' => 2,
+                'kategori_id' => 2,
+                'nama_obat' => 'Amoxicillin 500 mg',
+                'batch' => 'AMX2503',
+                'harga_beli' => 9000,
+                'harga_jual' => 13000,
+                'stok' => 40,
+                'stok_minimum' => 15,
+                'tanggal_kadaluarsa' => '2028-07-15',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // ================= VITAMIN C (VTC) =================
+            [
+                'apotek_id' => 2,
+                'jenis_obat_id' => 3,
+                'kategori_id' => 3,
+                'nama_obat' => 'Vitamin C 1000 mg',
+                'batch' => 'VTC2501',
+                'harga_beli' => 12500,
+                'harga_jual' => 19000,
+                'stok' => 95,
+                'stok_minimum' => 25,
+                'tanggal_kadaluarsa' => '2028-07-30',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'apotek_id' => 2,
+                'jenis_obat_id' => 3,
+                'kategori_id' => 3,
+                'nama_obat' => 'Vitamin C 1000 mg',
+                'batch' => 'VTC2502',
+                'harga_beli' => 12500,
+                'harga_jual' => 19000,
+                'stok' => 75,
+                'stok_minimum' => 25,
+                'tanggal_kadaluarsa' => '2028-10-20',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'apotek_id' => 2,
+                'jenis_obat_id' => 3,
+                'kategori_id' => 3,
+                'nama_obat' => 'Vitamin C 1000 mg',
+                'batch' => 'VTC2503',
+                'harga_beli' => 12500,
+                'harga_jual' => 19000,
+                'stok' => 50,
+                'stok_minimum' => 25,
+                'tanggal_kadaluarsa' => '2028-12-05',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // ================= IBUPROFEN (IBU) =================
+            [
+                'apotek_id' => 2,
+                'jenis_obat_id' => 1,
+                'kategori_id' => 1,
+                'nama_obat' => 'Ibuprofen 400 mg',
+                'batch' => 'IBU2501',
+                'harga_beli' => 7500,
+                'harga_jual' => 11000,
+                'stok' => 35,
+                'stok_minimum' => 10,
+                'tanggal_kadaluarsa' => '2028-04-20',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'apotek_id' => 2,
+                'jenis_obat_id' => 1,
+                'kategori_id' => 1,
+                'nama_obat' => 'Ibuprofen 400 mg',
+                'batch' => 'IBU2502',
+                'harga_beli' => 7500,
+                'harga_jual' => 11000,
+                'stok' => 45,
+                'stok_minimum' => 10,
+                'tanggal_kadaluarsa' => '2028-07-10',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'apotek_id' => 2,
+                'jenis_obat_id' => 1,
+                'kategori_id' => 1,
+                'nama_obat' => 'Ibuprofen 400 mg',
+                'batch' => 'IBU2503',
+                'harga_beli' => 7500,
+                'harga_jual' => 11000,
+                'stok' => 25,
+                'stok_minimum' => 10,
+                'tanggal_kadaluarsa' => '2028-09-25',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // ================= CETIRIZINE (CTZ) =================
+            [
+                'apotek_id' => 2,
+                'jenis_obat_id' => 4,
+                'kategori_id' => 3,
+                'nama_obat' => 'Cetirizine 10 mg',
+                'batch' => 'CTZ2501',
+                'harga_beli' => 3200,
+                'harga_jual' => 5500,
+                'stok' => 50,
+                'stok_minimum' => 15,
+                'tanggal_kadaluarsa' => '2028-02-28',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'apotek_id' => 2,
+                'jenis_obat_id' => 4,
+                'kategori_id' => 3,
+                'nama_obat' => 'Cetirizine 10 mg',
+                'batch' => 'CTZ2502',
+                'harga_beli' => 3200,
+                'harga_jual' => 5500,
+                'stok' => 30,
+                'stok_minimum' => 15,
+                'tanggal_kadaluarsa' => '2028-05-15',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'apotek_id' => 2,
+                'jenis_obat_id' => 4,
+                'kategori_id' => 3,
+                'nama_obat' => 'Cetirizine 10 mg',
+                'batch' => 'CTZ2503',
+                'harga_beli' => 3200,
+                'harga_jual' => 5500,
+                'stok' => 40,
+                'stok_minimum' => 15,
+                'tanggal_kadaluarsa' => '2028-08-20',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+        ]);
     }
 }

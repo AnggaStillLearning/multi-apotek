@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('obats', function (Blueprint $table) {
@@ -30,31 +27,25 @@ return new class extends Migration
                 ->constrained('kategoris')
                 ->cascadeOnDelete();
 
-            // Informasi Obat
+            // Master Obat
             $table->string('nama_obat');
 
-            // Batch obat
-            $table->string('batch');
+            // Harga beli default
+            $table->decimal('harga_beli_default', 12, 2)->default(0);
 
-            // Harga
-            $table->decimal('harga_beli', 12, 2)->default(0);
-            $table->decimal('harga_jual', 12, 2)->default(0);
-
-            // Persediaan
-            $table->integer('stok')->default(0);
+            // Batas minimum stok
             $table->integer('stok_minimum')->default(10);
 
-            // Kadaluarsa
-            $table->date('tanggal_kadaluarsa');
+            // Total stok seluruh batch
+            $table->integer('total_stok')->default(0);
+
+            // Keterangan obat
+            $table->text('deskripsi')->nullable();
 
             $table->timestamps();
-
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('obats');

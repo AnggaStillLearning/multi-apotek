@@ -10,6 +10,12 @@ use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\ApotekController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\GudangController;
+use App\Http\Controllers\RuanganController;
+use App\Http\Controllers\SatuanController;
+use App\Http\Controllers\BatchObatController;
+use App\Http\Controllers\KonversiObatController;
 
 Route::get(
     '/',
@@ -23,11 +29,24 @@ Route::get(
     'auth'
 ])->name('dashboard');
 
+Route::get(
+    '/laporan',
+    [ReportController::class, 'index']
+)->name('laporan.index');
+
+Route::get(
+    '/laporan/export/pdf',
+    [ReportController::class, 'exportPdf']
+)->name('laporan.export.pdf');
+
 /*
 |--------------------------------------------------------------------------
 | SUPER ADMIN
 |--------------------------------------------------------------------------
 */
+
+Route::resource('ruangans', RuanganController::class);
+Route::resource('satuans', SatuanController::class);
 
 Route::middleware([
     'auth',
@@ -79,6 +98,41 @@ Route::middleware([
 | ADMIN APOTEK & KASIR
 |--------------------------------------------------------------------------
 */
+Route::get(
+    '/gudangs/{gudang}/ruangans',
+    [BatchObatController::class,'getRuangan']
+)->name('gudang.ruangans');
+
+Route::post(
+    '/obats/{obat}/batch',
+    [BatchObatController::class, 'store']
+)->name('batch.store');
+
+Route::put(
+    '/batch/{batch}',
+    [BatchObatController::class, 'update']
+)->name('batch.update');
+
+Route::get(
+    '/batch/{batch}/edit',
+    [BatchObatController::class,'edit']
+)->name('batch.edit');
+
+Route::put(
+    '/batch/{batch}',
+    [BatchObatController::class,'update']
+)->name('batch.update');
+
+Route::delete(
+    '/batch/{batch}',
+    [BatchObatController::class,'destroy']
+)->name('batch.destroy');
+
+Route::delete(
+    '/batch/{batch}',
+    [BatchObatController::class, 'destroy']
+)->name('batch.destroy');
+
 
 Route::middleware([
     'auth',
@@ -91,11 +145,93 @@ Route::middleware([
     );
 
 });
+Route::resource('gudangs', GudangController::class);
 
 Route::get(
     '/obat/info/{nama}',
     [PenjualanController::class, 'getInfoObat']
 )->name('obat.info');
+
+Route::post(
+    '/obats/{obat}/konversi',
+    [KonversiObatController::class, 'store']
+)->name('konversi.store');
+
+Route::get(
+    '/konversi/{konversi}/edit',
+    [KonversiObatController::class, 'edit']
+)->name('konversi.edit');
+
+Route::put(
+    '/konversi/{konversi}',
+    [KonversiObatController::class, 'update']
+)->name('konversi.update');
+
+Route::delete(
+    '/konversi/{konversi}',
+    [KonversiObatController::class, 'destroy']
+)->name('konversi.destroy');
+
+/*
+|--------------------------------------------------------------------------
+| SHOP
+|--------------------------------------------------------------------------
+*/
+
+use App\Http\Controllers\ShopController;
+
+Route::get(
+    '/produk',
+    [ShopController::class, 'index']
+)->name('shop.index');
+
+Route::get(
+    '/produk/{obat}',
+    [ShopController::class, 'show']
+)->name('shop.show');
+
+/*
+|--------------------------------------------------------------------------
+| CART
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware([
+    'auth',
+    'role:pembeli'
+])->group(function () {
+
+    Route::get(
+        '/cart',
+        [ShopController::class, 'cart']
+    )->name('cart.index');
+
+    Route::post(
+        '/cart/add/{obat}',
+        [ShopController::class, 'addToCart']
+    )->name('cart.add');
+
+    Route::post(
+        '/cart/update/{id}',
+        [ShopController::class, 'updateCart']
+    )->name('cart.update');
+
+    Route::delete(
+        '/cart/remove/{id}',
+        [ShopController::class, 'removeCart']
+    )->name('cart.remove');
+
+});
+
+Route::get(
+    '/checkout',
+    [ShopController::class, 'checkout']
+)->name('checkout.index');
+
+Route::post(
+    '/checkout',
+    [ShopController::class, 'storeCheckout']
+)->name('checkout.store');
 
 /*
 |--------------------------------------------------------------------------

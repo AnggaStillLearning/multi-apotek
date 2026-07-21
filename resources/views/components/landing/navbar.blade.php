@@ -15,7 +15,7 @@
 
                 <h1 class="text-2xl font-extrabold text-gray-800 tracking-wide">
 
-                    SIMPATI
+                    SIMA
 
                 </h1>
 

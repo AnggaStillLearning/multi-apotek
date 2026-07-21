@@ -28,6 +28,30 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+
+    /**
+ * Cek apakah user Super Admin
+ */
+public function isSuperAdmin(): bool
+{
+    return $this->role === 'super_admin';
+}
+
+/**
+ * Cek apakah user Admin Apotek
+ */
+public function isAdminApotek(): bool
+{
+    return $this->role === 'admin';
+}
+
+/**
+ * Cek apakah user Kasir
+ */
+public function isKasir(): bool
+{
+    return $this->role === 'kasir';
+}
     protected function casts(): array
     {
         return [

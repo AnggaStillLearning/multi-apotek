@@ -2,81 +2,137 @@
 
 @section('content')
 
-<h1 class="text-3xl font-bold mb-6">
-    Monitoring Stok Kritis
-</h1>
+<div class="mb-6">
 
-<div class="bg-white rounded-lg shadow overflow-hidden">
+    <h1 class="text-3xl font-bold text-gray-800">
+        Monitoring Stok Kritis
+    </h1>
 
-    <table class="w-full">
+    <p class="text-gray-500 mt-2">
+        Daftar obat yang memiliki stok sama atau di bawah batas minimum.
+    </p>
+
+</div>
+
+<div class="bg-white rounded-xl shadow overflow-hidden">
+
+    <table class="min-w-full">
 
         <thead class="bg-gray-100">
 
             <tr>
-                <th class="p-3 text-left">
+
+                <th class="px-6 py-3 text-left">
                     Nama Obat
                 </th>
 
-                <th class="p-3 text-left">
-                    Stok
+                <th class="px-6 py-3 text-center">
+                    Total Stok
                 </th>
 
-                <th class="p-3 text-left">
-                    Minimum
+                <th class="px-6 py-3 text-center">
+                    Stok Minimum
                 </th>
 
-                <th class="p-3 text-left">
+                <th class="px-6 py-3 text-center">
+                    Kekurangan
+                </th>
+
+                <th class="px-6 py-3 text-center">
                     Status
                 </th>
+
             </tr>
 
         </thead>
 
         <tbody>
 
-        @forelse($obats as $obat)
+            @forelse($obats as $obat)
 
-            <tr class="border-t">
+                @php
 
-                <td class="p-3">
-                    {{ $obat->nama_obat }}
-                </td>
+                    $selisih = max(
+                        0,
+                        $obat->stok_minimum - $obat->total_stok
+                    );
 
-                <td class="p-3">
-                    {{ $obat->stok }}
-                </td>
+                @endphp
 
-                <td class="p-3">
-                    {{ $obat->stok_minimum }}
-                </td>
+                <tr class="border-t hover:bg-gray-50">
 
-                <td class="p-3">
+                    <td class="px-6 py-4 font-medium">
 
-                    <span class="bg-red-500 text-white px-3 py-1 rounded">
-                        KRITIS
-                    </span>
+                        {{ $obat->nama_obat }}
 
-                </td>
+                    </td>
 
-            </tr>
+                    <td class="px-6 py-4 text-center">
 
-        @empty
+                        {{ $obat->total_stok }}
 
-            <tr>
-                <td colspan="4"
-                    class="text-center p-5">
+                    </td>
 
-                    Tidak ada stok kritis
+                    <td class="px-6 py-4 text-center">
 
-                </td>
-            </tr>
+                        {{ $obat->stok_minimum }}
 
-        @endforelse
+                    </td>
+
+                    <td class="px-6 py-4 text-center text-red-600 font-semibold">
+
+                        {{ $selisih }}
+
+                    </td>
+
+                    <td class="px-6 py-4 text-center">
+
+                        @if($obat->total_stok == 0)
+
+                            <span class="px-3 py-1 rounded-full bg-red-600 text-white text-sm">
+                                Sangat Kritis
+                            </span>
+
+                        @else
+
+                            <span class="px-3 py-1 rounded-full bg-yellow-500 text-white text-sm">
+                                Kritis
+                            </span>
+
+                        @endif
+
+                    </td>
+
+                </tr>
+
+            @empty
+
+                <tr>
+
+                    <td colspan="5" class="text-center py-10 text-gray-500">
+
+                        Tidak ada obat dengan stok kritis.
+
+                    </td>
+
+                </tr>
+
+            @endforelse
 
         </tbody>
 
     </table>
 
 </div>
+
+@if($obats->hasPages())
+
+    <div class="mt-6">
+
+        {{ $obats->links() }}
+
+    </div>
+
+@endif
 
 @endsection

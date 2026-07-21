@@ -20,8 +20,11 @@ class DatabaseSeeder extends Seeder
             JenisObatSeeder::class,
             KategoriSeeder::class,
             UserSeeder::class,
+            GudangSeeder::class,
+            RuanganSeeder::class,
+            SatuanSeeder::class,
 
         ]);
-        \App\Models\Obat::factory(100)->create();
+
     }
 }

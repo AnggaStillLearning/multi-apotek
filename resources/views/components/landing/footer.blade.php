@@ -25,7 +25,7 @@
 
                         <p class="text-sm text-gray-400">
 
-                            Sistem Manajemen Multi Apotek Terintegrasi
+                            Sistem Informasi Multi Apotek
 
                         </p>
 
@@ -130,7 +130,7 @@
 
             <p class="text-sm text-gray-400">
 
-                © {{ date('Y') }} SIMPATI. All Rights Reserved.
+                © {{ date('Y') }} SIMA. All Rights Reserved.
 
             </p>
 
