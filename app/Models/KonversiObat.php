@@ -19,7 +19,9 @@ class KonversiObat extends Model
 
         'harga_jual',
 
-        'is_default'
+        'is_default',
+
+        'urutan'
 
     ];
 
@@ -31,5 +33,10 @@ class KonversiObat extends Model
     public function satuan()
     {
         return $this->belongsTo(Satuan::class);
+    }
+
+    public function penjualanDetails()
+    {
+        return $this->hasMany(PenjualanDetail::class);
     }
 }

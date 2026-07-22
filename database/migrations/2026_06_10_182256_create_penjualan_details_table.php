@@ -6,44 +6,39 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('penjualan_details', function (Blueprint $table) {
 
-    $table->id();
+            $table->id();
 
-    $table->foreignId('penjualan_id')
-        ->constrained()
-        ->cascadeOnDelete();
+            $table->foreignId('penjualan_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
-    $table->foreignId('obat_id')
-        ->constrained()
-        ->cascadeOnDelete();
+            $table->foreignId('batch_obat_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
-    $table->integer('qty');
+            $table->foreignId('konversi_obat_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
-    $table->decimal(
-        'harga',
-        15,
-        2
-    );
+            $table->integer('qty');
 
-    $table->decimal(
-        'subtotal',
-        15,
-        2
-    );
+            $table->integer('isi');
 
-    $table->timestamps();
-});
+            $table->decimal('harga_beli', 15, 2);
+
+            $table->decimal('harga_jual', 15, 2);
+
+            $table->decimal('subtotal', 15, 2);
+
+            $table->timestamps();
+
+        });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('penjualan_details');

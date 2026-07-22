@@ -1,15 +1,17 @@
 <div class="bg-white rounded-xl shadow">
 
-    <div class="flex justify-between items-center p-6 border-b">
+    <div class="flex items-center justify-between p-6 border-b">
 
         <h2 class="text-xl font-semibold">
+
             Konversi Satuan
+
         </h2>
 
         <button
             type="button"
             onclick="openTambahKonversi()"
-            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
 
             + Tambah Konversi
 
@@ -17,122 +19,151 @@
 
     </div>
 
-    <table class="min-w-full">
+    <div class="overflow-x-auto">
 
-        <thead class="bg-gray-100">
+        <table class="min-w-full">
 
-            <tr>
+            <thead class="bg-gray-100">
 
-                <th class="px-6 py-4 text-left">
-                    Satuan
-                </th>
+                <tr>
 
-                <th class="px-6 py-4 text-center">
-                    Isi
-                </th>
+                    <th class="px-6 py-4 text-left">
 
-                <th class="px-6 py-4 text-right">
-                    Harga Jual
-                </th>
+                        Satuan
 
-                <th class="px-6 py-4 text-center">
-                    Default
-                </th>
+                    </th>
 
-                <th class="px-6 py-4 text-center">
-                    Aksi
-                </th>
+                    <th class="px-6 py-4 text-center">
 
-            </tr>
+                        Isi
 
-        </thead>
+                    </th>
 
-        <tbody>
+                    <th class="px-6 py-4 text-right">
 
-            @forelse($obat->konversis as $konversi)
+                        Harga Jual
 
-            <tr class="border-t hover:bg-gray-50">
+                    </th>
 
-                <td class="px-6 py-4">
+                    <th class="px-6 py-4 text-center">
 
-                    {{ $konversi->satuan->nama_satuan }}
+                        Default
 
-                </td>
+                    </th>
 
-                <td class="px-6 py-4 text-center">
+                    <th class="px-6 py-4 text-center">
 
-                    {{ number_format($konversi->isi) }}
+                        Aksi
 
-                </td>
+                    </th>
 
-                <td class="px-6 py-4 text-right">
+                </tr>
 
-                    Rp {{ number_format($konversi->harga_jual,0,',','.') }}
+            </thead>
 
-                </td>
+            <tbody>
 
-                <td class="px-6 py-4 text-center">
+                @forelse($obat->konversis as $konversi)
 
-                    @if($konversi->is_default)
+                    <tr class="border-t hover:bg-gray-50">
 
-                        <span class="bg-green-600 text-white text-xs px-3 py-1 rounded-full">
+                        <td class="px-6 py-4">
 
-                            Default
+                            {{ $konversi->satuan->nama_satuan }}
 
-                        </span>
+                        </td>
 
-                    @endif
+                        <td class="px-6 py-4 text-center">
 
-                </td>
+                            {{ number_format($konversi->isi) }}
 
-                <td class="px-6 py-4 text-center space-x-2">
+                        </td>
 
-                    <button
-                        onclick="editKonversi({{ $konversi->id }})"
-                        class="bg-yellow-500 text-white px-3 py-1 rounded">
+                        <td class="px-6 py-4 text-right">
 
-                        Edit
+                            Rp {{ number_format($konversi->harga_jual,0,',','.') }}
 
-                    </button>
+                        </td>
 
-                    <form
-                        action="{{ route('konversi.destroy',$konversi) }}"
-                        method="POST"
-                        class="inline">
+                        <td class="px-6 py-4 text-center">
 
-                        @csrf
-                        @method('DELETE')
+                            @if($konversi->is_default)
 
-                        <button
-                            onclick="return confirm('Hapus konversi?')"
-                            class="bg-red-600 text-white px-3 py-1 rounded">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
 
-                            Hapus
+                                    ✓ Default
 
-                        </button>
+                                </span>
 
-                    </form>
+                            @else
 
-                </td>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-500 text-xs">
 
-            </tr>
+                                    -
 
-            @empty
+                                </span>
 
-            <tr>
+                            @endif
 
-                <td colspan="5" class="py-8 text-center text-gray-500">
+                        </td>
 
-                    Belum ada konversi.
+                        <td class="px-6 py-4 text-center">
 
-                </td>
+                            <div class="flex justify-center gap-2">
 
-            </tr>
+                                <button
+                                    type="button"
+                                    onclick="editKonversi({{ $konversi->id }})"
+                                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded">
 
-            @endforelse
+                                    Edit
 
-        </tbody>
+                                </button>
 
-    </table>
+                                <form
+                                    action="{{ route('konversi.destroy',$konversi) }}"
+                                    method="POST"
+                                    onsubmit="return confirm('Yakin ingin menghapus konversi ini?')">
+
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button
+                                        type="submit"
+                                        class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">
+
+                                        Hapus
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                @empty
+
+                    <tr>
+
+                        <td
+                            colspan="5"
+                            class="text-center py-10 text-gray-500">
+
+                            Belum ada data konversi.
+
+                        </td>
+
+                    </tr>
+
+                @endforelse
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 </div>

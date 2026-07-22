@@ -43,6 +43,32 @@ class ShopController extends Controller
         compact('cart')
     );
 }
+public function apoteks()
+{
+    $apoteks = Apotek::orderBy('nama_apotek')->get();
+
+    return view('shop.apoteks', compact('apoteks'));
+}
+
+public function katalog(Apotek $apotek)
+{
+    $obats = Obat::with([
+            'kategori',
+            'jenis'
+        ])
+        ->where('apotek_id', $apotek->id)
+        ->where('total_stok', '>', 0)
+        ->orderBy('nama_obat')
+        ->paginate(12);
+
+    return view(
+        'shop.katalog',
+        compact(
+            'apotek',
+            'obats'
+        )
+    );
+}
 
 public function addToCart(Obat $obat)
 {

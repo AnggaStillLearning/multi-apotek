@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Penjualan;
 use App\Models\PenjualanDetail;
 use App\Models\Obat;
+use App\Models\BatchObat;
+use App\Models\KonversiObat;
 
 class PenjualanController extends Controller
 {
@@ -25,24 +27,40 @@ class PenjualanController extends Controller
         );
     }
 
-    public function create()
-    {
-        $obats = Obat::where(
-            'apotek_id',
-            auth()->user()->apotek_id
-        )
-        ->select(
-            'nama_obat'
-        )
-        ->distinct()
-        ->orderBy('nama_obat')
-        ->get();
+    public function create(Request $request)
+{
+    $query = Obat::with('konversis');
 
-        return view(
-            'penjualans.create',
-            compact('obats')
+    $query->where(
+        'apotek_id',
+        auth()->user()->apotek_id
+    );
+
+    if ($request->filled('search')) {
+
+        $query->where(
+            'nama_obat',
+            'like',
+            '%' . $request->search . '%'
         );
+
     }
+
+    $obats = $query
+        ->orderBy('nama_obat')
+        ->paginate(10)
+        ->withQueryString();
+
+    $cart = session()->get('cart', []);
+
+    return view(
+        'penjualans.create',
+        compact(
+            'obats',
+            'cart'
+        )
+    );
+}
 
     public function getInfoObat($nama)
 {
@@ -310,5 +328,123 @@ public function show(Penjualan $penjualan)
         'penjualans.show',
         compact('penjualan')
     );
+}
+public function addToCart(Request $request)
+{
+    $request->validate([
+        'obat_id' => 'required|exists:obats,id',
+        'konversi_id' => 'required|exists:konversi_obats,id',
+        'qty' => 'required|integer|min:1',
+    ]);
+
+    $obat = Obat::findOrFail($request->obat_id);
+
+    $konversi = $obat->konversis()
+        ->where('id', $request->konversi_id)
+        ->firstOrFail();
+
+    $cart = session()->get('cart', []);
+
+    $cart[] = [
+
+        'obat_id' => $obat->id,
+
+        'nama_obat' => $obat->nama_obat,
+
+        'konversi_id' => $konversi->id,
+
+        'satuan' => $konversi->satuan->nama_satuan,
+
+        'isi' => $konversi->isi,
+
+        'harga_jual' => $konversi->harga_jual,
+
+        'qty' => $request->qty,
+
+        'subtotal' => $konversi->harga_jual * $request->qty,
+
+    ];
+
+    session()->put('cart', $cart);
+
+    return redirect()
+        ->route('penjualans.create')
+        ->with('success', 'Obat berhasil ditambahkan ke keranjang.');
+}
+public function removeCart($index)
+{
+    $cart = session()->get('cart', []);
+
+    if (isset($cart[$index])) {
+
+        unset($cart[$index]);
+
+        session()->put(
+            'cart',
+            array_values($cart)
+        );
+
+    }
+
+    return back();
+}
+public function updateCart(Request $request, $index)
+{
+    $request->validate([
+        'qty' => 'required|integer|min:1',
+    ]);
+
+    $cart = session()->get('cart', []);
+
+    if (!isset($cart[$index])) {
+        return back()->with('error', 'Item tidak ditemukan.');
+    }
+
+    $cart[$index]['qty'] = $request->qty;
+
+    $cart[$index]['subtotal'] =
+        $cart[$index]['harga_jual'] * $request->qty;
+
+    session()->put('cart', $cart);
+
+    return back()->with('success', 'Jumlah berhasil diperbarui.');
+}
+public function checkout(Request $request)
+{
+    $cart = session()->get('cart', []);
+
+    if (empty($cart)) {
+        return back()->with('error', 'Keranjang masih kosong.');
+    }
+
+    DB::beginTransaction();
+
+    try {
+
+        $grandTotal = collect($cart)->sum('subtotal');
+
+        $penjualan = Penjualan::create([
+            'apotek_id' => auth()->user()->apotek_id,
+            'user_id' => auth()->id(),
+            'tanggal_penjualan' => now(),
+            'subtotal' => $grandTotal,
+            'grand_total' => $grandTotal,
+            'metode_pembayaran' => 'Tunai',
+            'status' => 'Lunas',
+        ]);
+
+        DB::commit();
+
+        return back()->with('success', 'Berhasil');
+
+    } catch (\Throwable $e) {
+
+        dd(
+            $e->getMessage(),
+            $e->getFile(),
+            $e->getLine()
+        );
+
+    }
 }
 }

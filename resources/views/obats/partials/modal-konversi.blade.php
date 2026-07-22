@@ -6,22 +6,22 @@
 
         <form
             id="konversiForm"
-            method="POST"
-            action="{{ route('konversi.store',$obat) }}">
+            action="{{ route('konversi.store', $obat) }}"
+            method="POST">
 
             @csrf
 
             <input
                 type="hidden"
-                id="methodField"
+                id="httpMethod"
                 name="_method"
                 value="POST">
 
-            <div class="flex justify-between items-center p-6 border-b">
+            <div class="flex items-center justify-between p-6 border-b">
 
                 <h2
                     id="konversiTitle"
-                    class="text-xl font-bold">
+                    class="text-xl font-semibold">
 
                     Tambah Konversi
 
@@ -29,9 +29,10 @@
 
                 <button
                     type="button"
-                    onclick="closeKonversiModal()">
+                    onclick="closeKonversiModal()"
+                    class="text-gray-500 hover:text-black text-xl">
 
-                    ✕
+                    &times;
 
                 </button>
 
@@ -41,7 +42,7 @@
 
                 <div>
 
-                    <label class="block mb-2 font-medium">
+                    <label class="block text-sm font-medium mb-2">
 
                         Satuan
 
@@ -54,7 +55,7 @@
                         required>
 
                         <option value="">
-                            Pilih Satuan
+                            -- Pilih Satuan --
                         </option>
 
                         @foreach($satuans as $satuan)
@@ -73,7 +74,7 @@
 
                 <div>
 
-                    <label class="block mb-2 font-medium">
+                    <label class="block text-sm font-medium mb-2">
 
                         Isi
 
@@ -91,7 +92,7 @@
 
                 <div>
 
-                    <label class="block mb-2 font-medium">
+                    <label class="block text-sm font-medium mb-2">
 
                         Harga Jual
 
@@ -101,6 +102,7 @@
                         type="number"
                         id="harga_jual"
                         name="harga_jual"
+                        min="0"
                         step="0.01"
                         class="w-full border rounded-lg p-3"
                         required>
@@ -125,19 +127,20 @@
 
             </div>
 
-            <div class="flex justify-end gap-3 p-6 border-t">
+            <div class="flex justify-end gap-3 border-t p-6">
 
                 <button
                     type="button"
                     onclick="closeKonversiModal()"
-                    class="px-4 py-2 rounded-lg bg-gray-300">
+                    class="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400">
 
                     Batal
 
                 </button>
 
                 <button
-                    class="px-4 py-2 rounded-lg bg-blue-600 text-white">
+                    type="submit"
+                    class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">
 
                     Simpan
 

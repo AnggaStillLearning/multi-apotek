@@ -11,27 +11,29 @@ class KonversiObatController extends Controller
     /**
      * Simpan konversi baru.
      */
-    public function store(
-        Obat $obat,
-        KonversiObatRequest $request
-    ) {
-        $this->authorizeObat($obat);
+    public function store(KonversiObatRequest $request, Obat $obat)
+{
+    $this->authorizeObat($obat);
 
-        $data = $request->validated();
+    $data = $request->validated();
 
-        if (!empty($data['is_default'])) {
+    if (!empty($data['is_default'])) {
 
-            $obat->konversis()->update([
-                'is_default' => false
-            ]);
-        }
+        $obat->konversis()->update([
+            'is_default' => false
+        ]);
 
-        $obat->konversis()->create($data);
-
-        return redirect()
-            ->route('obats.show', $obat)
-            ->with('success', 'Konversi berhasil ditambahkan.');
     }
+
+    // Menentukan urutan otomatis
+    $data['urutan'] = $obat->konversis()->max('urutan') + 1;
+
+    $obat->konversis()->create($data);
+
+    return redirect()
+        ->route('obats.show', $obat)
+        ->with('success', 'Konversi berhasil ditambahkan.');
+}
 
     /**
      * Ambil data konversi untuk modal edit.

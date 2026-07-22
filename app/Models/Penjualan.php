@@ -8,25 +8,27 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Penjualan extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-
         'apotek_id',
-
         'user_id',
-
-        'tanggal',
-
-        'total_harga',
-
-        'status'
-
+        'tanggal_penjualan',
+        'jenis_penjualan',
+        'subtotal',
+        'grand_total',
+        'metode_pembayaran',
+        'status',
     ];
 
     protected $casts = [
-
-        'tanggal' => 'datetime',
-
+        'tanggal_penjualan' => 'datetime',
     ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationship
+    |--------------------------------------------------------------------------
+    */
 
     public function apotek()
     {

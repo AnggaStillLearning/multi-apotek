@@ -41,4 +41,8 @@ class BatchObat extends Model
     {
         return $this->belongsTo(Ruangan::class);
     }
+    public function PenjualanDetails()
+    {
+        return $this->hasMany(PenjualanDetail::class);
+    }
 }

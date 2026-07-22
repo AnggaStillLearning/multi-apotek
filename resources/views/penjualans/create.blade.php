@@ -2,365 +2,306 @@
 
 @section('content')
 
-<h1 class="text-3xl font-bold mb-6">
-    Tambah Transaksi
-</h1>
+<div class="container">
 
-<div class="bg-white rounded-xl shadow p-6">
+    <h2 class="mb-4">Penjualan POS</h2>
 
-@if(session('error'))
+    {{-- Notifikasi --}}
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 
-<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-    {{ session('error') }}
-</div>
+    {{-- Pencarian --}}
+    <form method="GET" action="{{ route('penjualans.create') }}" class="mb-4">
 
-@endif
+        <input
+            type="text"
+            name="search"
+            class="form-control"
+            placeholder="Cari obat..."
+            value="{{ request('search') }}">
 
-<form action="{{ route('penjualans.store') }}" method="POST">
+    </form>
 
-    @csrf
+    <div class="card">
 
-    <div id="items">
+        <div class="card-header">
+            Daftar Obat
+        </div>
 
-        <div class="item border rounded-lg p-4 mb-4">
+        <div class="card-body p-0">
 
-            <div class="grid grid-cols-12 gap-4">
+            <table class="table table-bordered mb-0">
 
-                <div class="col-span-7">
+                <thead>
 
-                    <label class="block mb-2">
-                        Pilih Obat
-                    </label>
+                    <tr>
 
-                    <select
-                        name="nama_obat[]"
-                        class="obat w-full border rounded p-2">
+                        <th>Nama Obat</th>
 
-                        <option value="">
-                            Pilih Obat
-                        </option>
+                        <th width="220">Konversi</th>
 
-                    @foreach($obats as $obat)
+                        <th width="100">Qty</th>
 
-                        <option
-                            value="{{ $obat->nama_obat }}"
-                            data-harga="0">
+                        <th width="120">Aksi</th>
 
-                            {{ $obat->nama_obat }}
+                    </tr>
 
-                        </option>
+                </thead>
 
-                    @endforeach
+                <tbody>
 
-                    </select>
+                @forelse($obats as $obat)
 
-                    <small class="stok text-gray-500"></small>
+                    <tr>
 
-                </div>
+                        <form
+                            action="{{ route('penjualans.cart') }}"
+                            method="POST">
 
-                <div class="col-span-3">
+                            @csrf
 
-                    <label class="block mb-2">
-                        Qty
-                    </label>
+                            <td>
 
-                    <input
-                        type="number"
-                        name="qty[]"
-                        value="1"
-                        min="1"
-                        class="qty w-full border rounded p-2">
+                                {{ $obat->nama_obat }}
 
-                </div>
+                                <input
+                                    type="hidden"
+                                    name="obat_id"
+                                    value="{{ $obat->id }}">
 
-                <div class="col-span-2 flex items-end">
+                            </td>
 
-                    <button
-                        type="button"
-                        class="hapus bg-red-600 text-white px-3 py-2 rounded w-full">
+                            <td>
 
-                        Hapus
+                                <select
+                                    name="konversi_id"
+                                    class="form-control"
+                                    required>
 
-                    </button>
+                                    @foreach($obat->konversis as $konversi)
 
-                </div>
+                                        <option
+                                            value="{{ $konversi->id }}">
 
-            </div>
+                                            {{ $konversi->satuan->nama_satuan }}
+                                            -
+                                            Rp {{ number_format($konversi->harga_jual,0,',','.') }}
+
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </td>
+
+                            <td>
+
+                                <input
+                                    type="number"
+                                    name="qty"
+                                    min="1"
+                                    value="1"
+                                    class="form-control">
+
+                            </td>
+
+                            <td>
+
+                                <button
+                                    class="btn btn-primary btn-sm">
+
+                                    Tambah
+
+                                </button>
+
+                            </td>
+
+                        </form>
+
+                    </tr>
+
+                @empty
+
+                    <tr>
+
+                        <td colspan="4">
+
+                            Tidak ada data obat.
+
+                        </td>
+
+                    </tr>
+
+                @endforelse
+
+                </tbody>
+
+            </table>
 
         </div>
 
     </div>
 
-    <button
-        type="button"
-        id="tambah"
-        class="bg-blue-600 text-white px-4 py-2 rounded">
+    <div class="mt-3">
 
-        + Tambah Obat
+        {{ $obats->links() }}
+
+    </div>
+
+    <hr class="my-5">
+
+    <h4>Keranjang</h4>
+
+    <table class="table table-bordered">
+
+        <thead>
+
+        <tr>
+
+            <th>Obat</th>
+
+            <th>Satuan</th>
+
+            <th>Qty</th>
+
+            <th>Harga</th>
+
+            <th>Subtotal</th>
+
+            <th></th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        @php
+
+            $total = 0;
+
+        @endphp
+
+        @forelse($cart as $index => $item)
+
+            @php
+
+                $total += $item['subtotal'];
+
+            @endphp
+
+            <tr>
+
+                <td>{{ $item['nama_obat'] }}</td>
+
+                <td>{{ $item['satuan'] }}</td>
+
+                <td>
+
+<form
+    action="{{ route('penjualans.cart.update',$index) }}"
+    method="POST"
+    class="d-flex">
+
+    @csrf
+    @method('PUT')
+
+    <input
+        type="number"
+        name="qty"
+        value="{{ $item['qty'] }}"
+        min="1"
+        class="form-control form-control-sm me-2"
+        style="width:80px;">
+
+    <button
+        class="btn btn-warning btn-sm">
+
+        Update
 
     </button>
 
-    <hr class="my-6">
+</form>
 
-    <div class="text-right">
+</td>
 
-        <h2 class="text-2xl font-bold">
+                <td>
+                    Rp {{ number_format($item['harga_jual'],0,',','.') }}
+                </td>
+
+                <td>
+                    Rp {{ number_format($item['subtotal'],0,',','.') }}
+                </td>
+
+                <td>
+
+                    <form
+                        action="{{ route('penjualans.cart.remove',$index) }}"
+                        method="POST">
+
+                        @csrf
+                        @method('DELETE')
+
+                        <button
+                            class="btn btn-danger btn-sm">
+
+                            Hapus
+
+                        </button>
+
+                    </form>
+
+                </td>
+
+            </tr>
+
+        @empty
+
+            <tr>
+
+                <td colspan="6">
+
+                    Keranjang masih kosong.
+
+                </td>
+
+            </tr>
+
+        @endforelse
+
+        </tbody>
+
+    </table>
+
+    <div class="text-end">
+
+        <h4>
 
             Total :
-            <span id="total">
-                Rp 0
-            </span>
+            Rp {{ number_format($total,0,',','.') }}
 
-        </h2>
+        </h4>
 
     </div>
 
-    <div class="mt-6">
+    <div class="mt-3">
 
-        <button
-            class="bg-green-600 text-white px-6 py-3 rounded">
+        <form action="{{ route('penjualans.checkout') }}" method="POST">
 
-            Simpan Transaksi
+    @csrf
 
-        </button>
-
-    </div>
+    <button type="submit" class="btn btn-danger">
+        TEST CHECKOUT
+    </button>
 
 </form>
 
+    </div>
+
 </div>
-
-<script>
-
-const items = document.getElementById('items');
-
-/*
-|--------------------------------------------------------------------------
-| Tambah Item
-|--------------------------------------------------------------------------
-*/
-
-document.getElementById('tambah').onclick = function(){
-
-    let clone =
-    document.querySelector('.item')
-    .cloneNode(true);
-
-    clone.querySelector('.obat').selectedIndex = 0;
-
-    clone.querySelector('.qty').value = 1;
-
-    clone.querySelector('.qty').max = '';
-
-    clone.querySelector('.stok').innerHTML = '';
-
-    items.appendChild(clone);
-
-    updateDropdowns();
-
-    hitungTotal();
-
-};
-
-/*
-|--------------------------------------------------------------------------
-| Hapus Item
-|--------------------------------------------------------------------------
-*/
-
-document.addEventListener('click', function(e){
-
-    if(e.target.classList.contains('hapus')){
-
-        let totalItem =
-        document.querySelectorAll('.item');
-
-        if(totalItem.length > 1){
-
-            e.target.closest('.item').remove();
-
-            updateDropdowns();
-
-            hitungTotal();
-
-        }
-
-    }
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Pilih Obat
-|--------------------------------------------------------------------------
-*/
-
-document.addEventListener('change', async function (e) {
-
-    if (!e.target.classList.contains('obat')) {
-        return;
-    }
-
-    const namaObat = e.target.value;
-
-    if (namaObat === '') {
-        return;
-    }
-
-    try {
-
-        const response = await fetch(
-            "/obat/info/" + encodeURIComponent(namaObat)
-        );
-
-        const data = await response.json();
-
-        const item = e.target.closest('.item');
-
-        item.querySelector('.stok').innerHTML =
-            "Stok tersedia : " + data.stok;
-
-        item.querySelector('.qty').max =
-            data.stok;
-
-        e.target.selectedOptions[0].dataset.harga =
-            data.harga;
-
-        hitungTotal();
-
-        updateDropdowns();
-
-    } catch (error) {
-
-        console.error(error);
-
-    }
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Qty
-|--------------------------------------------------------------------------
-*/
-
-document.addEventListener('input', function(e){
-
-    if(e.target.classList.contains('qty')){
-
-        let max =
-        parseInt(e.target.max);
-
-        if(max && parseInt(e.target.value) > max){
-
-            e.target.value = max;
-
-        }
-
-        if(e.target.value < 1){
-
-            e.target.value = 1;
-
-        }
-
-        hitungTotal();
-
-    }
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Hitung Total
-|--------------------------------------------------------------------------
-*/
-
-function hitungTotal(){
-
-    let total = 0;
-
-    document.querySelectorAll('.item').forEach(function(item){
-
-        const select = item.querySelector('.obat');
-
-        const harga = Number(
-            select.selectedOptions[0]?.dataset.harga ?? 0
-        );
-
-        const qty = Number(
-            item.querySelector('.qty').value ?? 0
-        );
-
-        total += harga * qty;
-
-    });
-
-    document.getElementById('total').innerHTML =
-        'Rp ' + total.toLocaleString('id-ID');
-
-}
-
-/*
-|--------------------------------------------------------------------------
-| Disable Obat Yang Sudah Dipilih
-|--------------------------------------------------------------------------
-*/
-
-function updateDropdowns(){
-
-    let selected = [];
-
-    document.querySelectorAll('.obat').forEach(function(select){
-
-        if(select.value !== ''){
-
-            selected.push(select.value);
-
-        }
-
-    });
-
-    document.querySelectorAll('.obat').forEach(function(currentSelect){
-
-        currentSelect.querySelectorAll('option').forEach(function(option){
-
-            if(option.value === ''){
-
-                option.disabled = false;
-
-                return;
-
-            }
-
-            if(
-                selected.includes(option.value) &&
-                option.value !== currentSelect.value
-            ){
-
-                option.disabled = true;
-
-            }else{
-
-                option.disabled = false;
-
-            }
-
-        });
-
-    });
-
-}
-
-/*
-|--------------------------------------------------------------------------
-| Pertama Kali Halaman Dibuka
-|--------------------------------------------------------------------------
-*/
-
-updateDropdowns();
-
-hitungTotal();
-
-</script>
 
 @endsection

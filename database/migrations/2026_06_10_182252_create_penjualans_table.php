@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('penjualans', function (Blueprint $table) {
@@ -23,24 +20,21 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
-            $table->dateTime('tanggal');
+            $table->dateTime('tanggal_penjualan');
 
-            $table->decimal('total_harga', 15, 2)
-                ->default(0);
+            $table->decimal('subtotal', 15, 2)->default(0);
 
-            $table->enum('status', [
-                'selesai',
-                'dibatalkan'
-            ])->default('selesai');
+            $table->decimal('grand_total', 15, 2)->default(0);
+
+            $table->string('metode_pembayaran');
+
+            $table->string('status')->default('Pending');
 
             $table->timestamps();
 
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('penjualans');
