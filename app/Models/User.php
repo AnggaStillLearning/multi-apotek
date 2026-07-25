@@ -68,4 +68,8 @@ public function isKasir(): bool
     {
         return $this->hasMany(Penjualan::class);
     }
+    public function pengadaans()
+    {
+        return $this->hasMany(Pengadaan::class);
+    }
 }

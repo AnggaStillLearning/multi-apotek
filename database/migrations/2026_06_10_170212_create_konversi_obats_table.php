@@ -13,9 +13,9 @@ return new class extends Migration
             $table->id();
 
             $table->unique([
-    'obat_id',
-    'satuan_id'
-]);
+                'obat_id',
+                'satuan_id'
+            ]);
             $table->foreignId('obat_id')
                   ->constrained()
                   ->cascadeOnDelete();
@@ -24,15 +24,19 @@ return new class extends Migration
                   ->constrained()
                   ->cascadeOnDelete();
 
-            // Jumlah satuan dasar
+            $table->unsignedInteger('urutan');
+
+            $table->unsignedInteger('rasio_turun')
+                  ->nullable();
+
             $table->unsignedInteger('isi');
 
-            $table->decimal('harga_jual',12,2);
+            // Jumlah satuan dasar
+
+            $table->decimal('harga_jual',15,2);
 
             $table->boolean('is_default')
                   ->default(false);
-
-            $table->unsignedInteger('urutan');
 
             $table->timestamps();
 

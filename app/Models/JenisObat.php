@@ -11,7 +11,9 @@ class JenisObat extends Model
 
     protected $fillable = [
 
-        'nama'
+        'id',
+        'nama',
+
 
     ];
 

@@ -36,4 +36,8 @@ class Gudang extends Model
     {
         return $this->hasMany(BatchObat::class);
     }
+    public function pengadaanDetails()
+    {
+        return $this->hasMany(PengadaanDetail::class);
+    }
 }

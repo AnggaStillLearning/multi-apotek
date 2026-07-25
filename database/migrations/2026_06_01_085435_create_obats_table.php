@@ -31,7 +31,7 @@ return new class extends Migration
             $table->string('nama_obat');
 
             // Harga beli default
-            $table->decimal('harga_beli_default', 12, 2)->default(0);
+            $table->decimal('harga_beli_default', 15, 2);
 
             // Batas minimum stok
             $table->integer('stok_minimum')->default(10);
@@ -41,6 +41,14 @@ return new class extends Migration
 
             // Keterangan obat
             $table->text('deskripsi')->nullable();
+            $table->foreignId('satuan_dasar_id')
+                ->constrained('satuans')
+                ->cascadeOnDelete();
+
+            $table->enum('tipe_produk', [
+                'obat',
+                'alat_kesehatan'
+            ])->default('obat');
 
             $table->timestamps();
         });

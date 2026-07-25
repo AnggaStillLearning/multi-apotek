@@ -30,13 +30,13 @@ return new class extends Migration
             $table->string('nomor_batch');
 
             // Kadaluarsa
-            $table->date('tanggal_kadaluarsa');
+            $table->date('tanggal_kadaluarsa')->nullable();
 
             // Persediaan
             $table->integer('stok')->default(0);
 
             // Harga beli batch
-            $table->decimal('harga_beli',12,2);
+            $table->decimal('harga_beli',15,2);
 
             $table->timestamps();
         });

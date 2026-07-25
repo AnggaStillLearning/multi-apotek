@@ -39,4 +39,8 @@ class Apotek extends Model
     {
         return $this->hasMany(Gudang::class);
     }
+    public function pengadaans()
+    {
+        return $this->hasMany(Pengadaan::class);
+    }
 }

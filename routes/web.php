@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\{KonversiApiController, GudangApiController};
 use App\Http\Controllers\{
     ProfileController,
     DashboardController,
@@ -16,7 +17,10 @@ use App\Http\Controllers\{
     SatuanController,
     BatchObatController,
     KonversiObatController,
-    ShopController
+    ShopController,
+    SupplierController,
+    PengadaanController,
+    PengadaanDetailController
 };
 
 /*
@@ -61,6 +65,21 @@ Route::middleware(['auth', 'role:admin_apotek'])->group(function () {
     // Monitoring
     Route::get('/monitoring/stok-kritis', [MonitoringController::class, 'stokKritis'])->name('monitoring.stok-kritis');
     Route::get('/monitoring/kadaluarsa', [MonitoringController::class, 'kadaluarsa'])->name('monitoring.kadaluarsa');
+
+    // Pengadaan
+    Route::resource('pengadaans', PengadaanController::class);
+
+    Route::post('/pengadaans/{pengadaan}/selesaikan', [PengadaanController::class, 'selesaikan'])
+        ->name('pengadaans.selesaikan');
+
+    Route::post('/pengadaans/{pengadaan}/items', [PengadaanDetailController::class, 'store'])
+        ->name('pengadaans.items.store');
+
+    Route::put('/pengadaan-items/{detail}', [PengadaanDetailController::class, 'update'])
+        ->name('pengadaans.items.update');
+
+    Route::delete('/pengadaan-items/{detail}', [PengadaanDetailController::class, 'destroy'])
+        ->name('pengadaans.items.destroy');
 });
 
 /*
@@ -84,6 +103,7 @@ Route::middleware(['auth', 'role:admin_apotek,kasir'])->group(function () {
     Route::post('/penjualans/checkout', [PenjualanController::class, 'checkout'])
         ->name('penjualans.checkout');
 });
+Route::resource('suppliers', SupplierController::class);
 /*
 |--------------------------------------------------------------------------
 | BATCH OBAT ROUTES
@@ -168,6 +188,19 @@ Route::prefix('laporan')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::get('/obat/info/{nama}', [PenjualanController::class, 'getInfoObat'])->name('obat.info');
+Route::prefix('api')->group(function () {
+
+    Route::get(
+        '/obats/{obat}/konversi',
+        [KonversiApiController::class, 'index']
+    )->name('api.obats.konversi');
+
+    Route::get(
+        '/gudangs/{gudang}/ruangans',
+        [GudangApiController::class, 'ruangans']
+    )->name('api.gudangs.ruangans');
+
+});
 
 /*
 |--------------------------------------------------------------------------
