@@ -27,8 +27,8 @@ class KonversiObatRequest extends FormRequest
                     ->ignore($this->route('konversi')),
             ],
 
-            'isi' => [
-                'required',
+            'rasio_turun' => [
+                'nullable',
                 'integer',
                 'min:1'
             ],
@@ -55,7 +55,9 @@ class KonversiObatRequest extends FormRequest
 
             'satuan_id.unique' => 'Satuan tersebut sudah digunakan.',
 
-            'isi.required' => 'Isi wajib diisi.',
+            'rasio_turun.integer' => 'Rasio turun harus berupa angka.',
+
+            'rasio_turun.min' => 'Rasio turun minimal 1.',
 
             'harga_jual.required' => 'Harga jual wajib diisi.',
 

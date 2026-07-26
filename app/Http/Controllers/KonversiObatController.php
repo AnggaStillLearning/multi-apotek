@@ -28,6 +28,10 @@ class KonversiObatController extends Controller
     // Menentukan urutan otomatis
     $data['urutan'] = $obat->konversis()->max('urutan') + 1;
 
+    // Placeholder, nilai sebenarnya dihitung otomatis dari rasio_turun
+    // oleh KonversiObat::booted() begitu baris ini tersimpan.
+    $data['isi'] = $data['rasio_turun'] ?? 1;
+
     $obat->konversis()->create($data);
 
     return redirect()

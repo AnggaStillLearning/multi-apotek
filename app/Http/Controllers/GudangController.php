@@ -56,6 +56,21 @@ class GudangController extends Controller
     }
 
     /**
+     * Detail gudang beserta daftar ruangannya
+     */
+    public function show(Gudang $gudang)
+    {
+        $this->authorizeGudang($gudang);
+
+        $gudang->load('apotek', 'ruangans');
+
+        return view(
+            'gudangs.show',
+            compact('gudang')
+        );
+    }
+
+    /**
      * Form tambah gudang
      */
     public function create()

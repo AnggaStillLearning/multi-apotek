@@ -1,10 +1,3 @@
-@php
-
-$stokNotif = 0;
-$expiredNotif = 0;
-$totalNotif = 0;
-
-@endphp
 <div class="flex justify-end items-center gap-6">
     {{-- ================= NOTIFIKASI ================= --}}
     <div class="relative" x-data="{ notif: false }">
@@ -35,7 +28,7 @@ $totalNotif = 0;
             </div>
 
             @if($stokNotif)
-                <div class="px-5 py-4 border-b hover:bg-gray-50">
+                <a href="{{ route('monitoring.stok-kritis') }}" class="block px-5 py-4 border-b hover:bg-gray-50">
                     <div class="font-semibold text-red-600">
                         <!-- Stok Kritis Icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -46,11 +39,11 @@ $totalNotif = 0;
                     <div class="text-sm text-gray-500">
                         {{ $stokNotif }} obat perlu direstock.
                     </div>
-                </div>
+                </a>
             @endif
 
             @if($expiredNotif)
-                <div class="px-5 py-4 border-b hover:bg-gray-50">
+                <a href="{{ route('monitoring.kadaluarsa') }}" class="block px-5 py-4 border-b hover:bg-gray-50">
                     <div class="font-semibold text-yellow-600">
                         <!-- Kadaluarsa Icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -61,7 +54,7 @@ $totalNotif = 0;
                     <div class="text-sm text-gray-500">
                         {{ $expiredNotif }} obat mendekati kadaluarsa.
                     </div>
-                </div>
+                </a>
             @endif
 
             @if($totalNotif == 0)

@@ -120,6 +120,8 @@
 
         form.reset();
 
+        document.getElementById('rasio_turun').disabled=false;
+
         form.action="{{ route('konversi.store',$obat) }}";
 
         document.getElementById('httpMethod').value='POST';
@@ -157,7 +159,11 @@
 
             document.getElementById('satuan_id').value=data.satuan_id;
 
-            document.getElementById('isi').value=data.isi;
+            document.getElementById('is_dasar').checked=!data.rasio_turun;
+
+            toggleRasioTurun(!data.rasio_turun);
+
+            document.getElementById('rasio_turun').value=data.rasio_turun ?? '';
 
             document.getElementById('harga_jual').value=data.harga_jual;
 

@@ -155,6 +155,16 @@ Aksi
 <td class="px-4 py-3 text-center">
 
 <a
+href="{{ route('gudangs.show',$gudang->id) }}"
+class="text-green-600 hover:underline">
+
+Detail
+
+</a>
+
+|
+
+<a
 href="{{ route('gudangs.edit',$gudang->id) }}"
 class="text-blue-600 hover:underline">
 

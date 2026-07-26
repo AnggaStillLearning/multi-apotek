@@ -76,17 +76,37 @@
 
                     <label class="block text-sm font-medium mb-2">
 
-                        Isi
+                        Rasio ke Satuan di Bawahnya
 
                     </label>
 
                     <input
                         type="number"
-                        id="isi"
-                        name="isi"
+                        id="rasio_turun"
+                        name="rasio_turun"
                         min="1"
-                        class="w-full border rounded-lg p-3"
-                        required>
+                        class="w-full border rounded-lg p-3">
+
+                    <p class="text-xs text-gray-500 mt-1">
+
+                        Contoh: 1 Karton = 12 Botol, isi 12. Kosongkan jika ini satuan dasar (satuan terkecil).
+
+                    </p>
+
+                </div>
+
+                <div class="flex items-center gap-3">
+
+                    <input
+                        type="checkbox"
+                        id="is_dasar"
+                        onchange="toggleRasioTurun(this.checked)">
+
+                    <label for="is_dasar">
+
+                        Ini satuan dasar (satuan terkecil, tidak punya rasio turun)
+
+                    </label>
 
                 </div>
 
@@ -153,3 +173,17 @@
     </div>
 
 </div>
+
+<script>
+    function toggleRasioTurun(isDasar) {
+
+        const input = document.getElementById('rasio_turun');
+
+        if (isDasar) {
+            input.value = '';
+            input.disabled = true;
+        } else {
+            input.disabled = false;
+        }
+    }
+</script>

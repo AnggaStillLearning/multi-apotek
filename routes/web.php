@@ -139,6 +139,8 @@ Route::resource('gudangs', GudangController::class);
 Route::resource('ruangans', RuanganController::class);
 Route::resource('satuans', SatuanController::class);
 
+Route::post('/gudangs/{gudang}/ruangans', [RuanganController::class, 'storeForGudang'])->name('gudangs.ruangans.store');
+
 Route::get('/gudangs/{gudang}/ruangans', [BatchObatController::class, 'getRuangan'])->name('gudang.ruangans');
 
 /*

@@ -86,6 +86,43 @@ class RuanganController extends Controller
     }
 
     /**
+     * Simpan ruangan langsung dari halaman detail gudang.
+     * gudang_id diambil dari route (bukan input), jadi tidak perlu
+     * dropdown pilih gudang lagi dan lebih aman dari manipulasi.
+     */
+    public function storeForGudang(Request $request, Gudang $gudang)
+    {
+        if (
+            !auth()->user()->isSuperAdmin()
+            &&
+            $gudang->apotek_id != auth()->user()->apotek_id
+        ) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+
+            'nama_ruangan' => 'required|string|max:255',
+
+            'keterangan' => 'nullable|string',
+
+        ], [
+
+            'nama_ruangan.required' => 'Nama ruangan wajib diisi.',
+
+        ]);
+
+        $gudang->ruangans()->create($validated);
+
+        return redirect()
+            ->route('gudangs.show', $gudang)
+            ->with(
+                'success',
+                'Ruangan berhasil ditambahkan.'
+            );
+    }
+
+    /**
      * Simpan ruangan
      */
     public function store(RuanganRequest $request)
@@ -186,12 +223,10 @@ class RuanganController extends Controller
 
         $ruangan->delete();
 
-        return redirect()
-            ->route('ruangans.index')
-            ->with(
-                'success',
-                'Ruangan berhasil dihapus.'
-            );
+        return back()->with(
+            'success',
+            'Ruangan berhasil dihapus.'
+        );
     }
 
     /**
