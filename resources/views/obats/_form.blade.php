@@ -113,6 +113,88 @@
 
     </div>
 
+    {{-- Tipe Produk --}}
+    <div>
+
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+            Tipe Produk
+        </label>
+
+        <select
+            name="tipe_produk"
+            class="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+            required>
+
+            <option value="obat" {{ old('tipe_produk', $obat->tipe_produk ?? 'obat') == 'obat' ? 'selected' : '' }}>
+                Obat
+            </option>
+
+            <option value="alat_kesehatan" {{ old('tipe_produk', $obat->tipe_produk ?? '') == 'alat_kesehatan' ? 'selected' : '' }}>
+                Alat Kesehatan
+            </option>
+
+        </select>
+
+        <p class="text-xs text-gray-500 mt-1">
+            Alat kesehatan boleh tidak punya tanggal kadaluarsa saat pengadaan.
+        </p>
+
+    </div>
+
+    {{-- Satuan Dasar --}}
+    <div>
+
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+            Satuan Dasar
+        </label>
+
+        @if($satuanDasarTerkunci ?? false)
+
+            <select
+                disabled
+                class="w-full rounded-lg border-gray-300 bg-gray-100 text-gray-500">
+
+                <option>{{ $obat->satuanDasar->nama_satuan }}</option>
+
+            </select>
+
+            <input type="hidden" name="satuan_dasar_id" value="{{ $obat->satuan_dasar_id }}">
+
+            <p class="text-xs text-gray-500 mt-1">
+                Tidak bisa diubah karena obat ini sudah punya konversi satuan atau batch stok.
+            </p>
+
+        @else
+
+            <select
+                name="satuan_dasar_id"
+                class="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                required>
+
+                <option value="">Pilih Satuan Dasar</option>
+
+                @foreach($satuans as $satuan)
+
+                    <option
+                        value="{{ $satuan->id }}"
+                        {{ old('satuan_dasar_id', $obat->satuan_dasar_id ?? '') == $satuan->id ? 'selected' : '' }}>
+
+                        {{ $satuan->nama_satuan }}
+
+                    </option>
+
+                @endforeach
+
+            </select>
+
+            <p class="text-xs text-gray-500 mt-1">
+                Satuan terkecil obat ini (mis. Tablet, Botol, Pcs). Semua konversi satuan lain dihitung relatif ke sini — pilih dengan hati-hati, karena akan terkunci setelah ada konversi/batch.
+            </p>
+
+        @endif
+
+    </div>
+
 </div>
 
 {{-- Deskripsi --}}

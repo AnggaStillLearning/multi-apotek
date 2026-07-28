@@ -4,7 +4,11 @@
 
 <div class="container mx-auto py-8">
 
-    <div class="bg-white rounded-xl shadow p-8">
+    <a href="{{ route('shop.katalog', $apotek) }}" class="text-blue-600 hover:underline text-sm">
+        &larr; Kembali ke {{ $apotek->nama_apotek }}
+    </a>
+
+    <div class="bg-white rounded-xl shadow p-8 mt-4">
 
         <h1 class="text-3xl font-bold">
 
@@ -18,7 +22,7 @@
 
                 <strong>Kategori :</strong>
 
-                {{ $obat->kategori->nama_kategori ?? '-' }}
+                {{ $obat->kategori->nama ?? '-' }}
 
             </p>
 
@@ -26,23 +30,23 @@
 
                 <strong>Jenis :</strong>
 
-                {{ $obat->jenisObat->nama ?? '-' }}
+                {{ $obat->jenis->nama ?? '-' }}
 
             </p>
 
             <p>
 
-                <strong>Harga :</strong>
+                <strong>Deskripsi :</strong>
 
-                Rp {{ number_format($obat->harga_jual,0,',','.') }}
+                {{ $obat->deskripsi ?? '-' }}
 
             </p>
 
             <p>
 
-                <strong>Stok :</strong>
+                <strong>Stok tersedia :</strong>
 
-                {{ $obat->stok }}
+                {{ $obat->breakdownStokText() }}
 
             </p>
 
@@ -54,20 +58,53 @@
 
                 @if(auth()->user()->role == 'pembeli')
 
-                    <form
-    action="{{ route('cart.add',$obat->id) }}"
-    method="POST">
+                    @if($obat->konversis->isEmpty())
 
-    @csrf
+                        <p class="text-gray-500">Obat ini belum memiliki satuan yang bisa dijual.</p>
 
-    <button
-        class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg">
+                    @else
 
-        Tambah ke Keranjang
+                        <form
+                            action="{{ route('pemesanan.items.store', [$apotek, $obat]) }}"
+                            method="POST"
+                            class="flex flex-wrap items-end gap-4">
 
-    </button>
+                            @csrf
 
-</form>
+                            <div>
+                                <label class="block text-sm font-semibold mb-1">Satuan</label>
+                                <select name="konversi_obat_id" class="border rounded-lg p-2">
+                                    @foreach($obat->konversis as $konversi)
+                                        <option
+                                            value="{{ $konversi->id }}"
+                                            {{ $konversi->is_default ? 'selected' : '' }}>
+                                            {{ $konversi->satuan->nama_satuan }}
+                                            (Rp {{ number_format($konversi->harga_jual, 0, ',', '.') }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold mb-1">Jumlah</label>
+                                <input
+                                    type="number"
+                                    name="qty"
+                                    value="1"
+                                    min="1"
+                                    class="border rounded-lg p-2 w-24">
+                            </div>
+
+                            <button
+                                class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg">
+
+                                Tambah ke Keranjang
+
+                            </button>
+
+                        </form>
+
+                    @endif
 
                 @endif
 

@@ -53,6 +53,25 @@ class KonversiObat extends Model
         return $this->hasMany(PengadaanDetail::class);
     }
 
+    public function pemesananDetails()
+    {
+        return $this->hasMany(PemesananDetail::class, 'konversi_obat_id');
+    }
+
+    public function pembelianDetails()
+    {
+        return $this->hasMany(PembelianDetail::class, 'konversi_obat_id');
+    }
+
+    /**
+     * Konversi qty di satuan ini ke satuan dasar.
+     * Mis. konversi Box(isi=12), qtyDasar(5) -> 60.
+     */
+    public function qtyDasar(int $qty): int
+    {
+        return $qty * $this->isi;
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Auto-hitung isi (total ke satuan dasar) dari rasio_turun berjenjang

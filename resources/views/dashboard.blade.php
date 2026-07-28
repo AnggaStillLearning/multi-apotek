@@ -30,7 +30,7 @@
         <div class="bg-white rounded-xl shadow-sm">
             <div class="flex items-center justify-between border-b p-5">
                 <h2 class="text-lg font-semibold text-red-600">⚠ Monitoring Stok Kritis</h2>
-                <a href="{{ route('monitoring.stok-kritis') }}" class="text-sm text-blue-600 hover:underline">
+                <a href="{{ route('monitoring.index', ['tab' => 'stok-kritis']) }}" class="text-sm text-blue-600 hover:underline">
                     Lihat Semua
                 </a>
             </div>
@@ -65,7 +65,7 @@
         <div class="bg-white rounded-xl shadow-sm">
             <div class="flex items-center justify-between border-b p-5">
                 <h2 class="text-lg font-semibold text-yellow-600">⏳ Monitoring Kadaluarsa</h2>
-                <a href="{{ route('monitoring.kadaluarsa') }}" class="text-sm text-blue-600 hover:underline">
+                <a href="{{ route('monitoring.index', ['tab' => 'akan-kadaluarsa']) }}" class="text-sm text-blue-600 hover:underline">
                     Lihat Semua
                 </a>
             </div>

@@ -72,4 +72,19 @@ public function isKasir(): bool
     {
         return $this->hasMany(Pengadaan::class);
     }
+
+    public function pemesanans()
+    {
+        return $this->hasMany(Pemesanan::class);
+    }
+
+    public function pembelians()
+    {
+        return $this->hasMany(Pembelian::class);
+    }
+
+    public function pembelianSebagaiKasir()
+    {
+        return $this->hasMany(Pembelian::class, 'kasir_id');
+    }
 }

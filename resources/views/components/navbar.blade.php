@@ -28,7 +28,7 @@
             </div>
 
             @if($stokNotif)
-                <a href="{{ route('monitoring.stok-kritis') }}" class="block px-5 py-4 border-b hover:bg-gray-50">
+                <a href="{{ route('monitoring.index', ['tab' => 'stok-kritis']) }}" class="block px-5 py-4 border-b hover:bg-gray-50">
                     <div class="font-semibold text-red-600">
                         <!-- Stok Kritis Icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -43,7 +43,7 @@
             @endif
 
             @if($expiredNotif)
-                <a href="{{ route('monitoring.kadaluarsa') }}" class="block px-5 py-4 border-b hover:bg-gray-50">
+                <a href="{{ route('monitoring.index', ['tab' => 'akan-kadaluarsa']) }}" class="block px-5 py-4 border-b hover:bg-gray-50">
                     <div class="font-semibold text-yellow-600">
                         <!-- Kadaluarsa Icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

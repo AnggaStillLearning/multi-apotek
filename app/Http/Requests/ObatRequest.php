@@ -30,6 +30,10 @@ class ObatRequest extends FormRequest
 
         'jenis_obat_id'=>'required|exists:jenis_obats,id',
 
+        'tipe_produk'=>'required|in:obat,alat_kesehatan',
+
+        'satuan_dasar_id'=>'required|exists:satuans,id',
+
         'nama_obat'=>'required|max:255',
 
         'harga_beli_default'=>'required|numeric|min:0',

@@ -47,6 +47,30 @@
         <div>
 
             <label class="text-gray-500">
+                Tipe Produk
+            </label>
+
+            <p class="font-semibold">
+                {{ $obat->tipe_produk == 'alat_kesehatan' ? 'Alat Kesehatan' : 'Obat' }}
+            </p>
+
+        </div>
+
+        <div>
+
+            <label class="text-gray-500">
+                Satuan Dasar
+            </label>
+
+            <p class="font-semibold">
+                {{ $obat->satuanDasar->nama_satuan ?? '-' }}
+            </p>
+
+        </div>
+
+        <div>
+
+            <label class="text-gray-500">
                 Harga Beli Default
             </label>
 
@@ -76,6 +100,10 @@
 
             <p class="font-bold text-blue-600">
                 {{ $obat->total_stok }}
+            </p>
+
+            <p class="text-xs text-gray-500 mt-1">
+                {{ $obat->breakdownStokText() }}
             </p>
 
         </div>

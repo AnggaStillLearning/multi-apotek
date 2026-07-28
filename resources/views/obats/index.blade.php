@@ -59,6 +59,16 @@
                     </select>
                 </div>
 
+                <!-- Tipe Produk -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-2">Tipe Produk</label>
+                    <select name="tipe_produk" class="w-full border rounded-lg px-4 py-2">
+                        <option value="">Semua Tipe</option>
+                        <option value="obat" {{ request('tipe_produk') == 'obat' ? 'selected' : '' }}>Obat</option>
+                        <option value="alat_kesehatan" {{ request('tipe_produk') == 'alat_kesehatan' ? 'selected' : '' }}>Alat Kesehatan</option>
+                    </select>
+                </div>
+
                 <!-- Stok -->
                 <div>
                     <label class="block text-sm font-medium text-gray-600 mb-2">Stok</label>
@@ -92,6 +102,7 @@
                     <th class="px-5 py-3 text-left">Nama Obat</th>
                     <th class="px-5 py-3 text-left">Jenis</th>
                     <th class="px-5 py-3 text-left">Kategori</th>
+                    <th class="px-5 py-3 text-center">Tipe</th>
                     <th class="px-5 py-3 text-right">Harga Beli</th>
                     <th class="px-5 py-3 text-center">Stok Minimum</th>
                     <th class="px-5 py-3 text-center">Total Stok</th>
@@ -104,6 +115,17 @@
                         <td class="px-5 py-4 font-medium">{{ $obat->nama_obat }}</td>
                         <td class="px-5 py-4">{{ $obat->jenis->nama }}</td>
                         <td class="px-5 py-4">{{ $obat->kategori->nama }}</td>
+                        <td class="px-5 py-4 text-center">
+                            @if($obat->tipe_produk == 'alat_kesehatan')
+                                <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-medium">
+                                    Alat Kesehatan
+                                </span>
+                            @else
+                                <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-medium">
+                                    Obat
+                                </span>
+                            @endif
+                        </td>
                         <td class="px-5 py-4 text-right">Rp {{ number_format($obat->harga_beli_default,0,',','.') }}</td>
                         <td class="px-5 py-4 text-center">{{ $obat->stok_minimum }}</td>
                         <td class="px-5 py-4 text-center">
@@ -131,7 +153,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="text-center py-12 text-gray-500">Belum ada data obat.</td>
+                        <td colspan="8" class="text-center py-12 text-gray-500">Belum ada data obat.</td>
                     </tr>
                 @endforelse
             </tbody>

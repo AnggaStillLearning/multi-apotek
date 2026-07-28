@@ -7,7 +7,7 @@ use App\Models\Pengadaan;
 use App\Models\Supplier;
 use App\Models\Obat;
 use App\Models\Gudang;
-use App\Models\BatchObat;
+use App\Services\StokService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -145,19 +145,19 @@ class PengadaanController extends Controller
 
         DB::transaction(function () use ($pengadaan) {
 
+            $stokService = new StokService();
+
             foreach ($pengadaan->details as $detail) {
 
-                $batch = BatchObat::firstOrNew([
-                    'obat_id'     => $detail->obat_id,
-                    'gudang_id'   => $detail->gudang_id,
-                    'ruangan_id'  => $detail->ruangan_id,
-                    'nomor_batch' => $detail->nomor_batch,
+                $stokService->tambahStok([
+                    'obat_id'            => $detail->obat_id,
+                    'gudang_id'          => $detail->gudang_id,
+                    'ruangan_id'         => $detail->ruangan_id,
+                    'nomor_batch'        => $detail->nomor_batch,
+                    'qty_dasar'          => $detail->qty_dasar,
+                    'tanggal_kadaluarsa' => $detail->tanggal_kadaluarsa,
+                    'harga_beli'         => $detail->harga_beli,
                 ]);
-
-                $batch->tanggal_kadaluarsa = $detail->tanggal_kadaluarsa;
-                $batch->harga_beli = $detail->harga_beli;
-                $batch->stok = ($batch->stok ?? 0) + $detail->qty_dasar;
-                $batch->save();
             }
 
             $pengadaan->update([

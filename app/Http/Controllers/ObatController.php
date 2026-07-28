@@ -65,6 +65,44 @@ class ObatController extends Controller
 
         }
 
+        // Filter Tipe Produk (obat / alat_kesehatan)
+        if ($request->filled('tipe_produk')) {
+
+            $query->where(
+                'tipe_produk',
+                $request->tipe_produk
+            );
+
+        }
+
+        // Filter Stok Kritis (total_stok <= stok_minimum)
+        if ($request->filled('stok') && $request->stok === 'kritis') {
+
+            $query->whereColumn(
+                'total_stok',
+                '<=',
+                'stok_minimum'
+            );
+
+        }
+
+        // Filter obat yang punya batch mendekati kadaluarsa (<= 30 hari)
+        if ($request->filled('expired') && $request->expired === '1') {
+
+            $query->whereHas('batchObats', function ($q) {
+
+                $q->whereBetween(
+                    'tanggal_kadaluarsa',
+                    [
+                        now(),
+                        now()->addDays(30)
+                    ]
+                );
+
+            });
+
+        }
+
         $obats = $query
             ->latest()
             ->paginate(10)
@@ -93,11 +131,14 @@ class ObatController extends Controller
 
         $kategoris = Kategori::orderBy('nama')->get();
 
+        $satuans = Satuan::orderBy('nama_satuan')->get();
+
         return view(
             'obats.create',
             compact(
                 'jenisObats',
-                'kategoris'
+                'kategoris',
+                'satuans'
             )
         );
     }
@@ -135,6 +176,7 @@ class ObatController extends Controller
     $obat->load([
         'kategori',
         'jenis',
+        'satuanDasar',
         'konversis.satuan',
         'batchObats.gudang',
         'batchObats.ruangan'
@@ -179,12 +221,22 @@ class ObatController extends Controller
 
         $kategoris = Kategori::orderBy('nama')->get();
 
+        $satuans = Satuan::orderBy('nama_satuan')->get();
+
+        // Satuan dasar tidak boleh diganti lagi begitu obat ini sudah
+        // punya konversi satuan atau batch stok, karena breakdown stok
+        // dan qty_dasar yang sudah tersimpan menganggap satuan dasarnya tetap.
+        $satuanDasarTerkunci = $obat->konversis()->exists()
+            || $obat->batchObats()->exists();
+
         return view(
             'obats.edit',
             compact(
                 'obat',
                 'jenisObats',
-                'kategoris'
+                'kategoris',
+                'satuans',
+                'satuanDasarTerkunci'
             )
         );
     }
@@ -204,6 +256,15 @@ class ObatController extends Controller
 
             $data['apotek_id'] = auth()->user()->apotek_id;
 
+        }
+
+        // Jaga-jaga di sisi server: satuan dasar tidak boleh berubah
+        // kalau obat sudah punya konversi/batch, walau form di-utak-atik.
+        $satuanDasarTerkunci = $obat->konversis()->exists()
+            || $obat->batchObats()->exists();
+
+        if ($satuanDasarTerkunci) {
+            $data['satuan_dasar_id'] = $obat->satuan_dasar_id;
         }
 
         $obat->update($data);

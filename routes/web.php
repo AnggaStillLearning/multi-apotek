@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{KonversiApiController, GudangApiController};
+use App\Http\Controllers\Api\{KonversiApiController, GudangApiController, ObatApiController};
 use App\Http\Controllers\{
     ProfileController,
     DashboardController,
@@ -20,7 +20,11 @@ use App\Http\Controllers\{
     ShopController,
     SupplierController,
     PengadaanController,
-    PengadaanDetailController
+    PengadaanDetailController,
+    PemesananController,
+    PemesananDetailController,
+    PembelianOnlineController,
+    PembelianOfflineController
 };
 
 /*
@@ -59,12 +63,19 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
 | ADMIN APOTEK ROUTES
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'role:admin_apotek'])->group(function () {
+
+// obats punya bypass isSuperAdmin() di controllernya (lihat ObatController),
+// jadi super_admin diizinkan juga di sini — beda dari Monitoring & Pengadaan
+// di bawah yang murni pakai auth()->user()->apotek_id tanpa bypass, dan
+// akan tampil kosong/rusak kalau diakses super_admin (apotek_id-nya null).
+Route::middleware(['auth', 'role:admin_apotek,super_admin'])->group(function () {
     Route::resource('obats', ObatController::class);
+});
+
+Route::middleware(['auth', 'role:admin_apotek'])->group(function () {
 
     // Monitoring
-    Route::get('/monitoring/stok-kritis', [MonitoringController::class, 'stokKritis'])->name('monitoring.stok-kritis');
-    Route::get('/monitoring/kadaluarsa', [MonitoringController::class, 'kadaluarsa'])->name('monitoring.kadaluarsa');
+    Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');
 
     // Pengadaan
     Route::resource('pengadaans', PengadaanController::class);
@@ -102,46 +113,84 @@ Route::middleware(['auth', 'role:admin_apotek,kasir'])->group(function () {
 
     Route::post('/penjualans/checkout', [PenjualanController::class, 'checkout'])
         ->name('penjualans.checkout');
+
+    // Pembelian Online — tandai pesanan selesai (barang sudah diambil/dikirim)
+    Route::post('/pembelian-online/{pembelian}/selesai', [PembelianOnlineController::class, 'selesai'])
+        ->name('pembelian.online.selesai');
+
+    // Info stok/harga obat (dipakai form Penjualan lama)
+    Route::get('/obat/info/{nama}', [PenjualanController::class, 'getInfoObat'])->name('obat.info');
+
+    // Pembelian Offline (POS kasir) — kasir input langsung, jenis=offline.
+    Route::get('/pembelian-offline', [PembelianOfflineController::class, 'index'])
+        ->name('pembelian.offline.index');
+    Route::get('/pembelian-offline/create', [PembelianOfflineController::class, 'create'])
+        ->name('pembelian.offline.create');
+    Route::post('/pembelian-offline', [PembelianOfflineController::class, 'store'])
+        ->name('pembelian.offline.store');
+    Route::get('/pembelian-offline/{pembelian}', [PembelianOfflineController::class, 'show'])
+        ->name('pembelian.offline.show');
 });
-Route::resource('suppliers', SupplierController::class);
+Route::middleware(['auth', 'role:admin_apotek,super_admin'])->group(function () {
+    Route::resource('suppliers', SupplierController::class);
+});
 /*
 |--------------------------------------------------------------------------
 | BATCH OBAT ROUTES
 |--------------------------------------------------------------------------
+| Sebelumnya TANPA middleware sama sekali (celah keamanan + akan fatal
+| error kalau diakses guest, karena BatchObatController langsung memanggil
+| auth()->user()->isSuperAdmin() tanpa cek null dulu).
 */
-Route::prefix('batch')->group(function () {
-    Route::get('/{batch}/edit', [BatchObatController::class, 'edit'])->name('batch.edit');
-    Route::put('/{batch}', [BatchObatController::class, 'update'])->name('batch.update');
-    Route::delete('/{batch}', [BatchObatController::class, 'destroy'])->name('batch.destroy');
-});
+Route::middleware(['auth', 'role:admin_apotek,super_admin'])->group(function () {
 
-Route::post('/obats/{obat}/batch', [BatchObatController::class, 'store'])->name('batch.store');
+    Route::prefix('batch')->group(function () {
+        Route::get('/{batch}/edit', [BatchObatController::class, 'edit'])->name('batch.edit');
+        Route::put('/{batch}', [BatchObatController::class, 'update'])->name('batch.update');
+        Route::delete('/{batch}', [BatchObatController::class, 'destroy'])->name('batch.destroy');
+    });
+
+    Route::post('/obats/{obat}/batch', [BatchObatController::class, 'store'])->name('batch.store');
+
+});
 
 /*
 |--------------------------------------------------------------------------
 | KONVERSI OBAT ROUTES
 |--------------------------------------------------------------------------
 */
-Route::prefix('konversi')->group(function () {
-    Route::get('/{konversi}/edit', [KonversiObatController::class, 'edit'])->name('konversi.edit');
-    Route::put('/{konversi}', [KonversiObatController::class, 'update'])->name('konversi.update');
-    Route::delete('/{konversi}', [KonversiObatController::class, 'destroy'])->name('konversi.destroy');
-});
+Route::middleware(['auth', 'role:admin_apotek,super_admin'])->group(function () {
 
-Route::post('/obats/{obat}/konversi', [KonversiObatController::class, 'store'])->name('konversi.store');
+    Route::prefix('konversi')->group(function () {
+        Route::get('/{konversi}/edit', [KonversiObatController::class, 'edit'])->name('konversi.edit');
+        Route::put('/{konversi}', [KonversiObatController::class, 'update'])->name('konversi.update');
+        Route::delete('/{konversi}', [KonversiObatController::class, 'destroy'])->name('konversi.destroy');
+    });
+
+    Route::post('/obats/{obat}/konversi', [KonversiObatController::class, 'store'])->name('konversi.store');
+
+});
 
 /*
 |--------------------------------------------------------------------------
 | GUDANG & RUANGAN ROUTES
 |--------------------------------------------------------------------------
+| Sebelumnya TANPA middleware sama sekali — sama seperti Batch/Konversi
+| di atas, GudangController & RuanganController langsung panggil
+| auth()->user()->isSuperAdmin() sehingga akses tanpa login = fatal error,
+| bukan sekadar celah keamanan.
 */
-Route::resource('gudangs', GudangController::class);
-Route::resource('ruangans', RuanganController::class);
-Route::resource('satuans', SatuanController::class);
+Route::middleware(['auth', 'role:admin_apotek,super_admin'])->group(function () {
 
-Route::post('/gudangs/{gudang}/ruangans', [RuanganController::class, 'storeForGudang'])->name('gudangs.ruangans.store');
+    Route::resource('gudangs', GudangController::class);
+    Route::resource('ruangans', RuanganController::class);
+    Route::resource('satuans', SatuanController::class);
 
-Route::get('/gudangs/{gudang}/ruangans', [BatchObatController::class, 'getRuangan'])->name('gudang.ruangans');
+    Route::post('/gudangs/{gudang}/ruangans', [RuanganController::class, 'storeForGudang'])->name('gudangs.ruangans.store');
+
+    Route::get('/gudangs/{gudang}/ruangans', [BatchObatController::class, 'getRuangan'])->name('gudang.ruangans');
+
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -157,40 +206,64 @@ Route::get('/apotek/{apotek}', [ShopController::class, 'katalog'])
 Route::get('/apotek/{apotek}/produk/{obat}', [ShopController::class, 'show'])
     ->name('shop.show');
 
+// Webhook Midtrans (server-to-server, tanpa auth/CSRF — lihat notifikasi()
+// di PembelianOnlineController untuk verifikasi signature-nya).
+Route::post('/midtrans/notifikasi', [PembelianOnlineController::class, 'notifikasi'])
+    ->name('midtrans.notifikasi');
+
 /*
 |--------------------------------------------------------------------------
 | SHOP ROUTES (AUTHENTICATED - PEMBELI)
 |--------------------------------------------------------------------------
+| Keranjang (Pemesanan) & checkout/pembayaran (Pembelian online) tersimpan
+| di database, bukan session lagi — lihat PemesananController &
+| PembelianOnlineController.
 */
-Route::middleware(['auth', 'role:pembeli'])->prefix('cart')->group(function () {
-    Route::get('/', [ShopController::class, 'cart'])->name('cart.index');
-    Route::post('/add/{obat}', [ShopController::class, 'addToCart'])->name('cart.add');
-    Route::post('/update/{id}', [ShopController::class, 'updateCart'])->name('cart.update');
-    Route::delete('/remove/{id}', [ShopController::class, 'removeCart'])->name('cart.remove');
-});
+Route::middleware(['auth', 'role:pembeli'])->group(function () {
 
-Route::prefix('checkout')->group(function () {
-    Route::get('/', [ShopController::class, 'checkout'])->name('checkout.index');
-    Route::post('/', [ShopController::class, 'storeCheckout'])->name('checkout.store');
+    // Tambah ke keranjang dari halaman katalog/detail produk.
+    Route::post('/apotek/{apotek}/keranjang/{obat}', [PemesananController::class, 'store'])
+        ->name('pemesanan.items.store');
+
+    // Keranjang
+    Route::get('/keranjang', [PemesananController::class, 'index'])->name('pemesanan.index');
+    Route::get('/keranjang/{pemesanan}', [PemesananController::class, 'show'])->name('pemesanan.show');
+    Route::put('/keranjang-item/{detail}', [PemesananDetailController::class, 'update'])
+        ->name('pemesanan.items.update');
+    Route::delete('/keranjang-item/{detail}', [PemesananDetailController::class, 'destroy'])
+        ->name('pemesanan.items.destroy');
+
+    // Checkout keranjang -> Pembelian online
+    Route::post('/keranjang/{pemesanan}/checkout', [PembelianOnlineController::class, 'store'])
+        ->name('pembelian.online.store');
+
+    // Pesanan saya
+    Route::get('/pesanan-saya', [PembelianOnlineController::class, 'index'])->name('pembelian.online.index');
+    Route::get('/pesanan-saya/{pembelian}', [PembelianOnlineController::class, 'show'])->name('pembelian.online.show');
+    Route::post('/pesanan-saya/{pembelian}/bayar', [PembelianOnlineController::class, 'bayar'])->name('pembelian.online.bayar');
+    Route::post('/pesanan-saya/{pembelian}/batal', [PembelianOnlineController::class, 'batal'])->name('pembelian.online.batal');
 });
 
 /*
 |--------------------------------------------------------------------------
 | LAPORAN ROUTES
 |--------------------------------------------------------------------------
+| Sebelumnya TANPA middleware — ReportController langsung baca
+| auth()->user()->role (fatal error kalau guest) dan tidak ada filter
+| apotek_id sama sekali untuk role selain admin_apotek/kasir, jadi tanpa
+| auth ini bisa jadi kebocoran data penjualan seluruh apotek.
 */
-Route::prefix('laporan')->group(function () {
+Route::middleware(['auth', 'role:admin_apotek,kasir,super_admin'])->prefix('laporan')->group(function () {
     Route::get('/', [ReportController::class, 'index'])->name('laporan.index');
     Route::get('/export/pdf', [ReportController::class, 'exportPdf'])->name('laporan.export.pdf');
 });
 
 /*
 |--------------------------------------------------------------------------
-| OBAT INFO (API-like)
+| API (dipakai internal oleh form admin_apotek — Pengadaan, Obat, POS)
 |--------------------------------------------------------------------------
 */
-Route::get('/obat/info/{nama}', [PenjualanController::class, 'getInfoObat'])->name('obat.info');
-Route::prefix('api')->group(function () {
+Route::middleware(['auth', 'role:admin_apotek,kasir,super_admin'])->prefix('api')->group(function () {
 
     Route::get(
         '/obats/{obat}/konversi',
@@ -201,6 +274,11 @@ Route::prefix('api')->group(function () {
         '/gudangs/{gudang}/ruangans',
         [GudangApiController::class, 'ruangans']
     )->name('api.gudangs.ruangans');
+
+    Route::middleware(['role:admin_apotek,kasir'])->group(function () {
+        Route::get('/obats/search', [ObatApiController::class, 'search'])
+            ->name('api.obats.search');
+    });
 
 });
 

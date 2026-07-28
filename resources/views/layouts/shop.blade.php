@@ -45,25 +45,28 @@
 
                         @if(auth()->user()->role == 'pembeli')
 
-                            <a href="{{ route('cart.index') }}"
+                            <a href="{{ route('pemesanan.index') }}"
                                 class="relative hover:text-blue-600 transition">
 
                                 Keranjang
 
                                 @php
-                                    $cart = session('cart', []);
+                                    $jumlahItemKeranjang = \App\Models\PemesananDetail::whereHas(
+                                        'pemesanan',
+                                        fn($q) => $q->where('user_id', auth()->id())->where('status', 'draft')
+                                    )->count();
                                 @endphp
 
-                                @if(count($cart))
+                                @if($jumlahItemKeranjang)
                                     <span
                                         class="absolute -top-2 -right-4 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
-                                        {{ count($cart) }}
+                                        {{ $jumlahItemKeranjang }}
                                     </span>
                                 @endif
 
                             </a>
 
-                            <a href="#"
+                            <a href="{{ route('pembelian.online.index') }}"
                                 class="hover:text-blue-600 transition">
                                 Pesanan Saya
                             </a>
